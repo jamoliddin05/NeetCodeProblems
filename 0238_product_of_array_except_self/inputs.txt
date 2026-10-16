@@ -1,0 +1,54 @@
+# Test cases for Product of Array Except Self — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [5] * 100.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+nums = [1, 2, 4, 6]
+expected = [48, 24, 12, 8]
+
+# Example 2
+nums = [-1, 0, 1, 2, 3]
+expected = [0, -6, 0, 0, 0]
+
+# minimum length: two elements swap places
+nums = [3, 4]
+expected = [4, 3]
+
+# zero at the start: only position 0 is non-zero
+nums = [0, 2, 3, 4]
+expected = [24, 0, 0, 0]
+
+# zero at the end: only the last position is non-zero
+nums = [1, 2, 3, 0]
+expected = [0, 0, 0, 6]
+
+# two zeros: every product contains a zero
+nums = [0, 4, 0]
+expected = [0, 0, 0]
+
+# all zeros
+nums = [0, 0]
+expected = [0, 0]
+
+# all negative: signs depend on how many negatives are left
+nums = [-1, -2, -3, -4]
+expected = [-24, -12, -8, -6]
+
+# alternating 1 and -1
+nums = [1, -1, 1, -1, 1]
+expected = [1, -1, 1, -1, 1]
+
+# all equal
+nums = [2, 2, 2, 2, 2]
+expected = [16, 16, 16, 16, 16]
+
+# extremes -30 / 30, products up to 1.46 * 10^9
+nums = [-30, 30, 30, 30, 30, 30, 2]
+expected = [48600000, -48600000, -48600000, -48600000, -48600000, -48600000, -729000000]
+
+# stress: n = 10^5, alternating 1 / -1 followed by 2 and 3
+nums = [1, -1] * 49999 + [2, 3]
+expected = [-6, 6] * 49999 + [-3, -2]

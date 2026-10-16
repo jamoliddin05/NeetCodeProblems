@@ -1,0 +1,51 @@
+# Test cases for Encode and Decode Strings — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like ["a" * 199].
+# Leave `expected` out to just see what your solution returns.
+# Each case runs decode(encode(strs)) and expects the original list back.
+
+# Example 1
+strs = ["Hello", "World"]
+expected = ["Hello", "World"]
+
+# Example 2
+strs = [""]
+expected = [""]
+
+# empty list (must not come back as [""])
+strs = []
+expected = []
+
+# several empty strings
+strs = ["", "", ""]
+expected = ["", "", ""]
+
+# strings made of separator-like characters
+strs = ["#", "a#b", "##", "/", ";", "|", "4#abcd"]
+expected = ["#", "a#b", "##", "/", ";", "|", "4#abcd"]
+
+# strings that start with or are only digits
+strs = ["123", "4", "56#7", "0", "10abc"]
+expected = ["123", "4", "56#7", "0", "10abc"]
+
+# whitespace, commas, quotes and backslashes
+strs = [" ", "  a b ", ",", "a,b", "\"", "\\", "[\"x\"]", "\t", "\n", "line1\nline2"]
+expected = [" ", "  a b ", ",", "a,b", "\"", "\\", "[\"x\"]", "\t", "\n", "line1\nline2"]
+
+# all 256 ASCII characters, including \x00
+strs = ["".join(map(chr, range(128))), "".join(map(chr, range(128, 256))), chr(0), chr(255) * 3]
+expected = ["".join(map(chr, range(128))), "".join(map(chr, range(128, 256))), chr(0), chr(255) * 3]
+
+# lengths of 1, 2 and 3 digits (up to the 199 maximum)
+strs = ["c", "b" * 10, "a" * 199, "d" * 99, "e" * 100]
+expected = ["c", "b" * 10, "a" * 199, "d" * 99, "e" * 100]
+
+# max size: 99 strings of 199 characters each
+strs = ["".join(chr((7 * i + j) % 256) for j in range(199)) for i in range(99)]
+expected = ["".join(chr((7 * i + j) % 256) for j in range(199)) for i in range(99)]
+
+# follow-up: characters outside ASCII (the site's tests stay within ASCII)
+strs = ["héllo", "日本語", "🙂🙃", "Ωπ", "€"]
+expected = ["héllo", "日本語", "🙂🙃", "Ωπ", "€"]

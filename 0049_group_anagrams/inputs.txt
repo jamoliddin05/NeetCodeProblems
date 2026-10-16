@@ -1,0 +1,55 @@
+# Test cases for Group Anagrams — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like ["a" * 100].
+# Leave `expected` out to just see what your solution returns.
+# Any order is accepted: the order of the groups and the order inside each group don't matter.
+
+# Example 1
+strs = ["act", "pots", "tops", "cat", "stop", "hat"]
+expected = [["hat"], ["act", "cat"], ["stop", "pots", "tops"]]
+
+# Example 2
+strs = ["x"]
+expected = [["x"]]
+
+# Example 3
+strs = [""]
+expected = [[""]]
+
+# several empty strings form one group
+strs = ["", "", "a"]
+expected = [["", ""], ["a"]]
+
+# repeated word stays in the output twice
+strs = ["abc", "bca", "abc"]
+expected = [["abc", "bca", "abc"]]
+
+# same letters, different counts are not anagrams
+strs = ["aab", "abb", "ab", "ba"]
+expected = [["aab"], ["abb"], ["ab", "ba"]]
+
+# no anagrams at all
+strs = ["abc", "def", "ghi"]
+expected = [["abc"], ["def"], ["ghi"]]
+
+# every word in one group
+strs = ["eat", "tea", "ate", "eta", "aet"]
+expected = [["eat", "tea", "ate", "eta", "aet"]]
+
+# single letters with repeats
+strs = ["a", "b", "a", "c", "b"]
+expected = [["a", "a"], ["b", "b"], ["c"]]
+
+# equal letter-code sums, different letters
+strs = ["ad", "bc"]
+expected = [["ad"], ["bc"]]
+
+# letter counts above 9: 1 a + 11 b vs 11 a + 1 b
+strs = ["a" + "b" * 11, "a" * 11 + "b"]
+expected = [["a" + "b" * 11], ["a" * 11 + "b"]]
+
+# stress: 10^4 words, 5000 groups of 2 (a word and its reverse)
+strs = [w for i in range(1, 26) for j in range(1, 26) for k in range(1, 9) for w in ("a" * i + "b" * j + "c" * k, "c" * k + "b" * j + "a" * i)]
+expected = [["a" * i + "b" * j + "c" * k, "c" * k + "b" * j + "a" * i] for i in range(1, 26) for j in range(1, 26) for k in range(1, 9)]

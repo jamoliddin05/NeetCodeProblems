@@ -1,0 +1,66 @@
+# Test cases for Valid Anagram — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like "ab" * 25000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+s = "racecar"
+t = "carrace"
+expected = true
+
+# Example 2
+s = "jar"
+t = "jam"
+expected = false
+
+# single equal letter
+s = "a"
+t = "a"
+expected = true
+
+# single different letters
+s = "a"
+t = "b"
+expected = false
+
+# different lengths, one is a prefix of the other
+s = "a"
+t = "ab"
+expected = false
+
+# same set of letters, different counts
+s = "aab"
+t = "abb"
+expected = false
+
+# same letters, t has extra copies
+s = "aabb"
+t = "ab"
+expected = false
+
+# identical strings
+s = "anagram"
+t = "anagram"
+expected = true
+
+# all letters the same
+s = "aaaa"
+t = "aaaa"
+expected = true
+
+# whole alphabet vs reversed alphabet
+s = "abcdefghijklmnopqrstuvwxyz"
+t = "zyxwvutsrqponmlkjihgfedcba"
+expected = true
+
+# stress: 5*10^4 chars, t is s shifted by one
+s = "ab" * 25000
+t = "ba" * 25000
+expected = true
+
+# stress: 5*10^4 chars, only the last letter differs
+s = "z" * 49999 + "a"
+t = "z" * 49999 + "b"
+expected = false

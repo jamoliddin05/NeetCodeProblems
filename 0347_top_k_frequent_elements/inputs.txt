@@ -1,0 +1,62 @@
+# Test cases for Top K Frequent Elements — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [5] * 100.
+# Leave `expected` out to just see what your solution returns.
+# Any order is accepted: [3, 2] passes when expected is [2, 3].
+
+# Example 1
+nums = [1, 2, 2, 3, 3, 3]
+k = 2
+expected = [2, 3]
+
+# Example 2
+nums = [7, 7]
+k = 1
+expected = [7]
+
+# single element
+nums = [1]
+k = 1
+expected = [1]
+
+# one value fills the whole array (frequency = n)
+nums = [-3, -3, -3, -3, -3]
+k = 1
+expected = [-3]
+
+# all values distinct, k = n
+nums = [3, 1, 2]
+k = 3
+expected = [1, 2, 3]
+
+# k = number of distinct values: return all of them
+nums = [4, 1, -1, 2, -1, 2, 3]
+k = 5
+expected = [4, 1, -1, 2, 3]
+
+# tie inside the answer: two values share the top frequency
+nums = [1, 1, 2, 2, 3]
+k = 2
+expected = [1, 2]
+
+# big values are rare: frequency decides, not value
+nums = [1000, 999, 1, 1, 1, 2, 2, 2, 2]
+k = 2
+expected = [2, 1]
+
+# constraint extremes -1000 and 1000 next to -1 and 0
+nums = [1000, -1, -1, -1000, -1000, -1000, 0]
+k = 2
+expected = [-1000, -1]
+
+# unsorted input, most frequent value scattered
+nums = [5, 3, 1, 1, 1, 3, 73, 1]
+k = 2
+expected = [1, 3]
+
+# stress: n = 10^4, 2000 distinct values; 0..999 appear 7 times, -1000..-1 appear 3 times
+nums = [v for r in range(7) for v in range(-1000, 1000) if v >= 0 or r < 3]
+k = 1000
+expected = list(range(1000))
