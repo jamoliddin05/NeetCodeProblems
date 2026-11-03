@@ -1,0 +1,57 @@
+# Test cases for Two Integer Sum II — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [0] * 1000.
+# Leave `expected` out to just see what your solution returns.
+# Answers are 1-indexed positions, smaller one first.
+
+# Example 1
+numbers = [1, 2, 3, 4]
+target = 3
+expected = [1, 2]
+
+# smallest array: two elements at the value extremes
+numbers = [-1000, 1000]
+target = 0
+expected = [1, 2]
+
+# pair is the first and last element
+numbers = [1, 2, 3, 10]
+target = 11
+expected = [1, 4]
+
+# pair in the middle
+numbers = [1, 3, 4, 5, 7, 10, 11]
+target = 9
+expected = [3, 4]
+
+# both values equal: same value, different positions
+numbers = [2, 3, 3, 7]
+target = 6
+expected = [2, 3]
+
+# all negative
+numbers = [-9, -7, -5, -3, -1]
+target = -4
+expected = [4, 5]
+
+# target zero with a zero in the array
+numbers = [-3, 0, 3, 4]
+target = 0
+expected = [1, 3]
+
+# array of duplicates: only two elements fit
+numbers = [1, 1]
+target = 2
+expected = [1, 2]
+
+# stress: 30000 elements, pair is the last two
+numbers = [-1000] * 29998 + [400, 600]
+target = 1000
+expected = [29999, 30000]
+
+# max length: 30000 elements, pair is the first two
+numbers = [-600, -400] + [1000] * 29998
+target = -1000
+expected = [1, 2]
