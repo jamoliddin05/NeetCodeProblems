@@ -1,0 +1,425 @@
+<title>Why the Shorter Wall Moves</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: a lab bench. Bars (the physical picture) beside the pair grid (the bookkeeping), one shared stepper, the argument underneath. */
+  :root {
+    --bg: #EEF3F5;
+    --panel: #FFFFFF;
+    --ink: #13232E;
+    --muted: #5A6C78;
+    --rule: #D3DDE2;
+    --bar: #9AAAB5;
+    --gone: #DCE3E7;
+    --water: #2F86C4;
+    --water-fill: #BCDCF0;
+    --cut: #B86200;
+    --cut-fill: #F7E2C6;
+    --best: #1E7D58;
+    --best-fill: #BFE6D3;
+    --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E161C; --panel: #152129; --ink: #E3ECF1; --muted: #90A3AF; --rule: #26363F;
+      --bar: #6B808D; --gone: #22313A; --water: #62B3EA; --water-fill: #1B4460;
+      --cut: #F2A54A; --cut-fill: #4A3215; --best: #53CF98; --best-fill: #16432F;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E161C; --panel: #152129; --ink: #E3ECF1; --muted: #90A3AF; --rule: #26363F;
+    --bar: #6B808D; --gone: #22313A; --water: #62B3EA; --water-fill: #1B4460;
+    --cut: #F2A54A; --cut-fill: #4A3215; --best: #53CF98; --best-fill: #16432F;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+  .wrap {
+    max-width: 1100px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 32px 72px;
+    display: grid; gap: 28px;
+  }
+
+  header { display: grid; gap: 10px; max-width: 68ch; }
+  .eyebrow { margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1.08; text-wrap: balance; }
+  h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 24px; text-wrap: balance; }
+  .lede { margin: 0; color: var(--muted); font-size: 17px; }
+  .formula {
+    justify-self: start; margin-top: 4px; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px;
+    background: var(--panel); font-family: var(--mono); font-size: 14px; overflow-x: auto; max-width: 100%;
+  }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; }
+  .field { display: grid; gap: 4px; min-width: 0; }
+  .field label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .custom { display: flex; gap: 8px; }
+  select, input[type="text"] {
+    font: 14px var(--mono); color: var(--ink); background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 6px; padding: 7px 9px; min-width: 0;
+  }
+  input[type="text"] { width: 22ch; max-width: 100%; }
+  button {
+    font: 600 14px var(--body); color: var(--ink); background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 6px; padding: 7px 14px; cursor: pointer;
+  }
+  button:hover:not(:disabled) { border-color: var(--water); }
+  button.primary { background: var(--water); border-color: var(--water); color: var(--panel); }
+  button:disabled { opacity: .45; cursor: default; }
+  :focus-visible { outline: 2px solid var(--water); outline-offset: 2px; }
+  .stepper { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+  .counter { font: 13px var(--mono); color: var(--muted); min-width: 10ch; text-align: right; font-variant-numeric: tabular-nums; }
+  .error { color: var(--cut); font-size: 13px; margin: 0; min-height: 1.2em; }
+
+  .stage { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .stage { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); } }
+  .panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; min-width: 0; display: grid; gap: 8px; align-content: start; }
+  .panel-title { margin: 0; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .scroll { overflow-x: auto; }
+  svg { display: block; width: 100%; height: auto; }
+  #grid-svg { min-width: 260px; max-width: 420px; margin: 0 auto; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 12px; height: 12px; border-radius: 2px; border: 1px solid var(--rule); display: inline-block; }
+
+  .explain { display: grid; gap: 10px; }
+  .explain p { margin: 0; max-width: 72ch; }
+  .step-head { font-family: var(--display); font-weight: 600; font-size: 20px; }
+  .step-head b, .explain b { font-family: var(--mono); }
+  .pill { display: inline-block; font: 600 11px var(--body); letter-spacing: .06em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; vertical-align: 3px; margin-left: 6px; }
+  .pill.best { background: var(--best-fill); color: var(--best); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font: 13px var(--mono); padding: 3px 8px; border-radius: 5px; background: var(--cut-fill); color: var(--ink); border: 1px dashed var(--cut); font-variant-numeric: tabular-nums; }
+  .chip em { font-style: normal; color: var(--muted); }
+  .stats { display: flex; flex-wrap: wrap; gap: 4px 18px; font: 13px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .why { display: grid; gap: 14px; max-width: 72ch; }
+  .why p { margin: 0; }
+  .why ol { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; }
+  .why code { font-family: var(--mono); font-size: .92em; }
+  .note { color: var(--muted); }
+
+  /* SVG marks */
+  .floor { stroke: var(--muted); stroke-width: 1.5; }
+  .bar { fill: var(--bar); }
+  .bar.active { fill: var(--ink); }
+  .bar.short { fill: var(--cut); }
+  .bar.gone { fill: var(--gone); }
+  .bar.best { fill: var(--best); }
+  .water { fill: var(--water-fill); stroke: var(--water); stroke-width: 1.5; }
+  .water.best { fill: var(--best-fill); stroke: var(--best); }
+  .ghost { fill: none; stroke: var(--cut); stroke-width: 2; stroke-dasharray: 6 4; }
+  .val { fill: var(--ink); font: 600 13px var(--mono); text-anchor: middle; }
+  .val.gone { fill: var(--muted); opacity: .6; }
+  .idx { fill: var(--muted); font: 12px var(--mono); text-anchor: middle; }
+  .ptr { fill: var(--water); font: 700 14px var(--body); text-anchor: middle; }
+  .cell rect { fill: var(--panel); stroke: var(--rule); stroke-width: 1; }
+  .cell text { fill: var(--ink); font-family: var(--mono); text-anchor: middle; dominant-baseline: central; }
+  .cell.measured rect { fill: var(--water-fill); }
+  .cell.current rect { fill: var(--water); }
+  .cell.current text { fill: var(--panel); font-weight: 600; }
+  .cell.cut-now rect { fill: var(--cut-fill); stroke: var(--cut); stroke-dasharray: 3 2; }
+  .cell.cut rect { fill: var(--gone); }
+  .cell.cut text { fill: var(--muted); opacity: .7; }
+  .cell.best rect { fill: var(--best-fill); stroke: var(--best); stroke-width: 2.5; }
+  .cell.best text { fill: var(--best); font-weight: 600; }
+  .axis { fill: var(--muted); font: 11px var(--mono); text-anchor: middle; dominant-baseline: central; }
+  .axis-title { fill: var(--muted); font: 11px var(--body); letter-spacing: .06em; text-transform: uppercase; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bar, .water, .cell rect { transition: fill .25s ease, y .3s ease, height .3s ease, x .3s ease, width .3s ease; }
+  }
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">LeetCode 11 · Container With Most Water</p>
+    <h1>Why the shorter wall moves</h1>
+    <p class="lede">The scan starts with one pointer at each end. Every step measures one container and throws one wall away for good. Step through it and check each step: the wall it throws away never had a bigger container left in it.</p>
+    <div class="formula">area(i, j) = (j − i) × min(h[i], h[j])</div>
+  </header>
+
+  <section class="toolbar" aria-label="Input and stepping">
+    <div class="field">
+      <label for="example">Heights</label>
+      <select id="example">
+        <option value="ex1">Example 1 · [1,7,2,5,4,7,3,6]</option>
+        <option value="ex2">Example 2 · [2,2,2]</option>
+        <option value="classic">Mixed · [1,8,6,2,5,4,8,3,7]</option>
+        <option value="tall">Tall middle · [2,3,10,9,1,3]</option>
+        <option value="random">Random</option>
+      </select>
+    </div>
+    <form class="field" id="custom-form">
+      <label for="heights-input">Or your own (2–12 numbers)</label>
+      <div class="custom">
+        <input type="text" id="heights-input" placeholder="4, 1, 1, 1, 4" autocomplete="off">
+        <button type="submit" id="apply">Use these</button>
+      </div>
+      <p class="error" id="error" role="alert"></p>
+    </form>
+    <div class="stepper">
+      <button id="reset" type="button">Restart</button>
+      <button id="back" type="button">← Back</button>
+      <button id="next" type="button" class="primary">Next →</button>
+      <span class="counter" id="counter"></span>
+    </div>
+  </section>
+
+  <section class="stage">
+    <div class="panel">
+      <p class="panel-title">The bars</p>
+      <svg id="bars-svg" viewBox="0 0 640 300" role="img" aria-label="Bars with the current container filled with water"></svg>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--water-fill);border-color:var(--water)"></i>water between L and R</span>
+        <span><i class="sw" style="background:var(--cut)"></i>shorter wall</span>
+        <span><i class="sw" style="border:2px dashed var(--cut)"></i>containers it could still make</span>
+      </div>
+    </div>
+    <div class="panel">
+      <p class="panel-title">Every pair, as a grid</p>
+      <div class="scroll"><svg id="grid-svg" role="img" aria-label="Grid of all pairs with their areas"></svg></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--water)"></i>measuring now</span>
+        <span><i class="sw" style="background:var(--water-fill)"></i>measured</span>
+        <span><i class="sw" style="background:var(--cut-fill);border-color:var(--cut)"></i>ruled out now</span>
+        <span><i class="sw" style="background:var(--gone)"></i>ruled out</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel explain" aria-live="polite">
+    <div id="explain"></div>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section class="why">
+    <h2>The argument, without the pictures</h2>
+    <ol>
+      <li>Say <code>h[L] ≤ h[R]</code>. The container <code>(L, R)</code> holds <code>(R − L) × h[L]</code>, and we've just measured it.</li>
+      <li>Any other container that still uses bar <code>L</code> pairs it with some <code>k</code> between them. It is narrower (<code>k − L &lt; R − L</code>) and its water can't rise above <code>h[L]</code>.</li>
+      <li>So it holds no more than <code>(L, R)</code>. Bar <code>L</code> has nothing better left to offer, and dropping it can't lose the answer.</li>
+    </ol>
+    <p>The grid shows why nothing slips through. The pairs still in play always form a triangle with <code>(L, R)</code> in its top-right corner. Dropping <code>L</code> deletes that triangle's top row; dropping <code>R</code> deletes its right column. After <code>n − 1</code> steps the triangle is empty, and every pair was either measured or ruled out by a measured pair that's at least as big. The largest measured area is therefore the largest of all.</p>
+    <p class="note">The taller wall can't be dropped the same way. Its partners can be taller than the short wall, so a narrower container could still hold more. Try Example 1: dropping bar 7 (height 6) first would skip (1, 7) = 36.</p>
+    <p class="note">When both walls are the same height, the argument works for either one, so it doesn't matter which pointer moves.</p>
+  </section>
+</main>
+
+<script>
+(() => {
+  const EXAMPLES = {
+    ex1: [1, 7, 2, 5, 4, 7, 3, 6],
+    ex2: [2, 2, 2],
+    classic: [1, 8, 6, 2, 5, 4, 8, 3, 7],
+    tall: [2, 3, 10, 9, 1, 3],
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const NS = "http://www.w3.org/2000/svg";
+  let h = EXAMPLES.ex1, steps = [], s = 0;
+
+  function trace(h) {
+    const out = [];
+    let L = 0, R = h.length - 1, best = -1, bp = null;
+    while (L < R) {
+      const area = (R - L) * Math.min(h[L], h[R]);
+      const newBest = area > best;
+      if (newBest) { best = area; bp = [L, R]; }
+      const side = h[L] < h[R] ? "L" : "R";
+      const cut = [];
+      for (let k = L + 1; k < R; k++) cut.push(side === "L" ? [L, k] : [k, R]);
+      out.push({ L, R, area, best, bp, newBest, side, cut });
+      if (side === "L") L++; else R--;
+    }
+    out.push({ L, R, done: true, best, bp });
+    return out;
+  }
+
+  const areaOf = (a, b) => (b - a) * Math.min(h[a], h[b]);
+
+  function el(name, attrs, text) {
+    const node = document.createElementNS(NS, name);
+    for (const k in attrs) node.setAttribute(k, attrs[k]);
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function renderBars(st) {
+    const svg = $("bars-svg");
+    svg.replaceChildren();
+    const W = 640, padX = 20, top = 30, base = 238;
+    const n = h.length, slot = (W - 2 * padX) / n;
+    const cx = (i) => padX + slot * (i + 0.5);
+    const bw = Math.min(30, slot * 0.42);
+    const maxH = Math.max(1, ...h);
+    const y = (v) => base - (v / maxH) * (base - top);
+
+    const box = (a, b, cls) => {
+      const lvl = Math.min(h[a], h[b]);
+      return el("rect", { x: cx(a), y: y(lvl), width: cx(b) - cx(a), height: Math.max(base - y(lvl), 1.5), class: cls });
+    };
+
+    if (st.done) svg.append(box(st.bp[0], st.bp[1], "water best"));
+    else svg.append(box(st.L, st.R, "water"));
+
+    const short = st.done ? -1 : (st.side === "L" ? st.L : st.R);
+    h.forEach((v, i) => {
+      let cls = "bar";
+      const outside = i < st.L || i > st.R;
+      if (st.done) cls += (i === st.bp[0] || i === st.bp[1]) ? " best" : " gone";
+      else if (i === short) cls += " short";
+      else if (i === st.L || i === st.R) cls += " active";
+      else if (outside) cls += " gone";
+      svg.append(el("rect", { x: cx(i) - bw / 2, y: y(v), width: bw, height: Math.max(base - y(v), 2), class: cls, rx: 2 }));
+      svg.append(el("text", { x: cx(i), y: y(v) - 7, class: "val" + (outside && !st.done ? " gone" : "") }, v));
+      svg.append(el("text", { x: cx(i), y: base + 18, class: "idx" }, i));
+    });
+
+    if (!st.done) st.cut.forEach(([a, b]) => svg.append(box(a, b, "ghost")));
+
+    svg.append(el("line", { x1: padX - 6, x2: W - padX + 6, y1: base, y2: base, class: "floor" }));
+    if (st.done) {
+      svg.append(el("text", { x: cx(st.L), y: base + 42, class: "ptr" }, "L R"));
+    } else {
+      svg.append(el("text", { x: cx(st.L), y: base + 42, class: "ptr" }, "L"));
+      svg.append(el("text", { x: cx(st.R), y: base + 42, class: "ptr" }, "R"));
+    }
+  }
+
+  function cellStates() {
+    const state = new Map();
+    const key = (a, b) => a + "," + b;
+    for (let k = 0; k <= s; k++) {
+      const st = steps[k];
+      if (st.done) break;
+      state.set(key(st.L, st.R), k === s ? "current" : "measured");
+      st.cut.forEach(([a, b]) => state.set(key(a, b), k === s ? "cut-now" : "cut"));
+    }
+    const cur = steps[s];
+    if (cur.done) state.set(key(cur.bp[0], cur.bp[1]), "best");
+    return state;
+  }
+
+  function renderGrid() {
+    const svg = $("grid-svg");
+    svg.replaceChildren();
+    const n = h.length, cs = 40, ml = 46, mt = 44;
+    const W = ml + (n - 1) * cs + 6, H = mt + (n - 1) * cs + 6;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const state = cellStates();
+    let maxDigits = 1;
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) maxDigits = Math.max(maxDigits, String(areaOf(i, j)).length);
+    const fs = Math.min(13, (cs * 0.85) / (maxDigits * 0.62));
+
+    svg.append(el("text", { x: ml + ((n - 1) * cs) / 2, y: 10, class: "axis-title", "text-anchor": "middle", "dominant-baseline": "central" }, "right wall j"));
+    const lt = el("text", { x: 10, y: mt + ((n - 1) * cs) / 2, class: "axis-title", "text-anchor": "middle", "dominant-baseline": "central", transform: `rotate(-90 10 ${mt + ((n - 1) * cs) / 2})` }, "left wall i");
+    svg.append(lt);
+    for (let j = 1; j < n; j++) svg.append(el("text", { x: ml + (j - 1) * cs + cs / 2, y: mt - 12, class: "axis" }, j));
+    for (let i = 0; i < n - 1; i++) svg.append(el("text", { x: ml - 12, y: mt + i * cs + cs / 2, class: "axis" }, i));
+
+    for (let i = 0; i < n - 1; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const g = el("g", { class: "cell " + (state.get(i + "," + j) || "") });
+        const x = ml + (j - 1) * cs, yy = mt + i * cs;
+        g.append(el("rect", { x: x + 1, y: yy + 1, width: cs - 2, height: cs - 2, rx: 3 }));
+        g.append(el("text", { x: x + cs / 2, y: yy + cs / 2, "font-size": fs }, areaOf(i, j)));
+        const t = el("title", {}, `(${i}, ${j}): ${j - i} × ${Math.min(h[i], h[j])} = ${areaOf(i, j)}`);
+        g.append(t);
+        svg.append(g);
+      }
+    }
+  }
+
+  function renderExplain(st) {
+    const n = h.length, total = n * (n - 1) / 2;
+    const box = $("explain");
+    if (st.done) {
+      const [a, b] = st.bp;
+      box.innerHTML =
+        `<p class="step-head">Pointers met. Answer: <b>${st.best}</b></p>` +
+        `<p>${n - 1} measurements covered all ${total} pairs. Every pair that wasn't measured was ruled out by a measured one that holds at least as much. The best measured container is bars ${a} and ${b}: ${b - a} × ${Math.min(h[a], h[b])} = ${st.best}.</p>`;
+    } else {
+      const { L, R, area, side, cut } = st;
+      const lvl = Math.min(h[L], h[R]);
+      const short = side === "L" ? L : R, other = side === "L" ? R : L;
+      const move = side === "L" ? "move L right" : "move R left";
+      let html = `<p class="step-head">Bars ${L} and ${R}: ${R - L} × ${lvl} = <b>${area}</b>` +
+        (st.newBest ? `<span class="pill best">new best</span>` : "") + `</p>`;
+      if (h[L] === h[R]) {
+        html += `<p>Both walls are ${h[L]} tall, so the argument works for either one. The code drops the right wall on a tie.</p>`;
+      } else {
+        html += `<p>Bar ${short} is the shorter wall (${h[short]} against ${h[other]}).</p>`;
+      }
+      if (cut.length) {
+        html += `<p>Keep bar ${short} but pair it with any bar in between, and the container gets narrower while its water still can't rise above ${h[short]}. Here are all ${cut.length} of them. Each one sits inside the water just measured:</p>`;
+        html += `<div class="chips">` + cut.map(([a, b]) => `<span class="chip">(${a}, ${b}) <em>=</em> ${areaOf(a, b)}</span>`).join("") + `</div>`;
+        html += `<p>None can beat ${area}, so bar ${short} is done: ${move}.</p>`;
+      } else {
+        html += `<p>There are no bars between them, so nothing else uses bar ${short}: ${move}.</p>`;
+      }
+      box.innerHTML = html;
+    }
+
+    let measured = 0, ruled = 0;
+    for (let k = 0; k <= s && !steps[k].done; k++) { measured++; ruled += steps[k].cut.length; }
+    if (st.done) measured = n - 1;
+    $("stats").innerHTML =
+      `<span>measured ${measured}</span><span>ruled out ${ruled}</span><span>still in play ${total - measured - ruled}</span><span>best so far ${st.best}</span>`;
+  }
+
+  function render() {
+    const st = steps[s];
+    renderBars(st);
+    renderGrid();
+    renderExplain(st);
+    $("counter").textContent = st.done ? "done" : `step ${s + 1} / ${steps.length - 1}`;
+    $("back").disabled = s === 0;
+    $("next").disabled = s === steps.length - 1;
+  }
+
+  function load(heights) {
+    h = heights;
+    steps = trace(h);
+    s = 0;
+    render();
+  }
+
+  function randomHeights() {
+    const n = 6 + Math.floor(Math.random() * 4);
+    return Array.from({ length: n }, () => 1 + Math.floor(Math.random() * 9));
+  }
+
+  $("next").addEventListener("click", () => { if (s < steps.length - 1) { s++; render(); } });
+  $("back").addEventListener("click", () => { if (s > 0) { s--; render(); } });
+  $("reset").addEventListener("click", () => { s = 0; render(); });
+  $("example").addEventListener("change", (e) => {
+    $("error").textContent = "";
+    load(e.target.value === "random" ? randomHeights() : EXAMPLES[e.target.value]);
+  });
+  $("custom-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const parts = $("heights-input").value.split(/[\s,\[\]]+/).filter(Boolean);
+    const nums = parts.map(Number);
+    if (nums.length < 2 || nums.length > 12) { $("error").textContent = "Enter between 2 and 12 numbers, separated by commas."; return; }
+    if (nums.some((v) => !Number.isInteger(v) || v < 0 || v > 10000)) { $("error").textContent = "Each height must be a whole number from 0 to 10000."; return; }
+    $("error").textContent = "";
+    load(nums);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.target.closest("input, select")) return;
+    if (e.key === "ArrowRight") $("next").click();
+    if (e.key === "ArrowLeft") $("back").click();
+  });
+
+  load(EXAMPLES.ex1);
+})();
+</script>
