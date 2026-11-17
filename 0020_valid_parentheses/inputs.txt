@@ -1,0 +1,62 @@
+# Test cases for Valid Parentheses — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like "()" * 500.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+s = "[]"
+expected = true
+
+# Example 2
+s = "([{}])"
+expected = true
+
+# Example 3
+s = "[(])"
+expected = false
+
+# single opening bracket
+s = "("
+expected = false
+
+# single closing bracket: nothing to close
+s = "]"
+expected = false
+
+# pairs side by side
+s = "()[]{}"
+expected = true
+
+# wrong type closes
+s = "(]"
+expected = false
+
+# closer comes before its opener
+s = ")("
+expected = false
+
+# counts match, order doesn't
+s = "())("
+expected = false
+
+# one opener left unclosed at the end
+s = "{[]"
+expected = false
+
+# nested groups next to each other
+s = "{[()]}([])"
+expected = true
+
+# max length: 1000 deep nesting
+s = "(" * 500 + ")" * 500
+expected = true
+
+# max length: all openers
+s = "[" * 1000
+expected = false
+
+# max length: valid until the last two characters
+s = "{}" * 499 + "}{"
+expected = false
