@@ -1,0 +1,610 @@
+<title>Water Above One Bar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: graph paper. One elevation map drawn in unit squares, the formula read off it underneath, then the three "why" questions with their own small figures. */
+  :root {
+    --bg: #EEF3F5;
+    --panel: #FFFFFF;
+    --ink: #13232E;
+    --muted: #5A6C78;
+    --rule: #D3DDE2;
+    --paper: #E6EDF0;
+    --bar: #A3B2BC;
+    --water: #2F86C4;
+    --water-fill: #A9D2EE;
+    --water-soft: #D3E8F6;
+    --left: #6F4CC3;
+    --right: #B9530F;
+    --sel: #E9F1F5;
+    --wrong: #B4232C;
+    --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E161C; --panel: #152129; --ink: #E3ECF1; --muted: #90A3AF; --rule: #26363F; --paper: #1D2B34;
+      --bar: #6B808D; --water: #62B3EA; --water-fill: #2A6790; --water-soft: #1B3A4F;
+      --left: #AE90F0; --right: #F2924E; --sel: #1A2932; --wrong: #F07178;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E161C; --panel: #152129; --ink: #E3ECF1; --muted: #90A3AF; --rule: #26363F; --paper: #1D2B34;
+    --bar: #6B808D; --water: #62B3EA; --water-fill: #2A6790; --water-soft: #1B3A4F;
+    --left: #AE90F0; --right: #F2924E; --sel: #1A2932; --wrong: #F07178;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+  .wrap {
+    max-width: 960px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 32px 72px;
+    display: grid; gap: 28px;
+  }
+
+  header { display: grid; gap: 10px; max-width: 68ch; }
+  .eyebrow { margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1.08; text-wrap: balance; }
+  h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1.2; text-wrap: balance; }
+  .lede { margin: 0; color: var(--muted); font-size: 17px; }
+  p { margin: 0; }
+  code { font-family: var(--mono); font-size: .92em; }
+
+  .panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; min-width: 0; display: grid; gap: 14px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; }
+  .field { display: grid; gap: 4px; min-width: 0; }
+  .field > label, .field > span { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  select, input[type="text"] {
+    font: 14px var(--mono); color: var(--ink); background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 6px; padding: 7px 9px; min-width: 0;
+  }
+  input[type="text"] { width: 20ch; max-width: 100%; }
+  button {
+    font: 600 14px var(--body); color: var(--ink); background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 6px; padding: 7px 12px; cursor: pointer;
+  }
+  button:hover:not(:disabled) { border-color: var(--water); }
+  button:disabled { opacity: .45; cursor: default; }
+  .check { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; cursor: pointer; }
+  .check input { width: 16px; height: 16px; accent-color: var(--water); }
+  :focus-visible { outline: 2px solid var(--water); outline-offset: 2px; }
+  .error { color: var(--wrong); font-size: 13px; min-height: 1.2em; }
+  .hint { font-size: 13px; color: var(--muted); }
+
+  .figure { overflow-x: auto; }
+  svg { display: block; width: 100%; height: auto; }
+  #map { min-width: 360px; }
+  .col-hit { cursor: pointer; fill: transparent; }
+
+  .readout { display: grid; gap: 10px; border-top: 1px solid var(--rule); padding-top: 14px; }
+  .eq { font: 600 clamp(17px, 3.2vw, 24px) var(--mono); display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; font-variant-numeric: tabular-nums; }
+  .eq .l { color: var(--left); }
+  .eq .r { color: var(--right); }
+  .eq .w { color: var(--water); }
+  .eq .muted { color: var(--muted); font-weight: 400; }
+  .story { max-width: 70ch; }
+  .total { font: 14px var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  .total b { color: var(--water); }
+
+  .why { display: grid; gap: 28px; }
+  .why section { display: grid; gap: 10px; max-width: 72ch; }
+  .why .wide { max-width: none; }
+  .note { color: var(--muted); }
+  .key { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+  .key span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 14px; height: 4px; border-radius: 2px; display: inline-block; }
+  .sq { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+
+  /* SVG marks */
+  .paper { stroke: var(--paper); stroke-width: 1; }
+  .unit { stroke: var(--panel); stroke-width: 1; opacity: .7; }
+  .band { fill: var(--sel); }
+  .bar { fill: var(--bar); }
+  .bar.lmax { fill: var(--left); }
+  .bar.rmax { fill: var(--right); }
+  .bar.both { fill: var(--ink); }
+  .water { fill: var(--water-fill); }
+  .water.other { fill: var(--water-soft); }
+  .floor { stroke: var(--muted); stroke-width: 1.5; }
+  .lvl { stroke-width: 2.5; fill: none; }
+  .lvl.l { stroke: var(--left); }
+  .lvl.r { stroke: var(--right); }
+  .lvl.spill { stroke-dasharray: 6 5; opacity: .75; }
+  .lvl.wrong { stroke: var(--wrong); stroke-dasharray: 3 4; }
+  .tag { font: 600 12px var(--mono); }
+  .tag.l { fill: var(--left); }
+  .tag.r { fill: var(--right); }
+  .tag.wrong { fill: var(--wrong); }
+  .amt { fill: var(--panel); font: 700 14px var(--mono); text-anchor: middle; dominant-baseline: central; }
+  .lab { fill: var(--muted); font: 12px var(--mono); text-anchor: middle; dominant-baseline: central; }
+  .lab.sel { fill: var(--ink); font-weight: 600; }
+  .lab.w { fill: var(--water); font-weight: 600; }
+  .rowname { fill: var(--muted); font: 11px var(--body); text-anchor: end; dominant-baseline: central; letter-spacing: .04em; }
+
+  .pass { display: grid; gap: 14px; }
+  .pass-intro { display: grid; gap: 10px; max-width: 72ch; }
+  .stepper { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .stepper .primary { background: var(--water); border-color: var(--water); color: var(--panel); }
+  .counter { font: 13px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  #tp { min-width: 360px; }
+  .unseen { fill: var(--sel); }
+  .unseen-label { fill: var(--muted); font: 11px var(--body); text-anchor: middle; letter-spacing: .04em; }
+  .ptr { fill: var(--water); font: 700 13px var(--mono); text-anchor: middle; dominant-baseline: central; }
+  .lab.done { fill: var(--water); }
+  .worked-title { margin: 6px 0 0; font-family: var(--display); font-weight: 600; font-size: 18px; }
+  .worked { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+  .steps { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+  .num { font-family: var(--mono); font-weight: 600; font-variant-numeric: slashed-zero tabular-nums; }
+  .lab.pending { fill: var(--muted); opacity: .5; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bar, .water, .band { transition: fill .2s ease; }
+  }
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">LeetCode 42 · Trapping Rain Water</p>
+    <h1>How much water sits on one bar</h1>
+    <p class="lede">Pick any bar. The water above it rises until it's level with the lower of two walls: the tallest bar on its left and the tallest bar on its right. Whatever the bar itself takes up doesn't count.</p>
+  </header>
+
+  <div class="panel">
+    <div class="toolbar">
+      <div class="field">
+        <label for="example">Elevation map</label>
+        <select id="example">
+          <option value="ex1">Example 1 · [0,2,0,3,1,0,1,3,2,1]</option>
+          <option value="lc">LeetCode · [0,1,0,2,1,0,1,3,2,1,2,1]</option>
+          <option value="pool">Wide pool · [4,2,0,3,2,5]</option>
+        </select>
+      </div>
+      <form class="field" id="custom-form">
+        <label for="heights-input">Or your own (2–16 bars, 0–12 tall)</label>
+        <div class="row">
+          <input type="text" id="heights-input" placeholder="3, 0, 2, 0, 4" autocomplete="off">
+          <button type="submit" id="apply">Draw it</button>
+        </div>
+        <p class="error" id="error" role="alert"></p>
+      </form>
+      <div class="field">
+        <span>Bar i</span>
+        <div class="row">
+          <button type="button" id="prev" aria-label="Previous bar">←</button>
+          <input type="range" id="pos" min="0" max="9" value="5" aria-label="Selected bar">
+          <button type="button" id="next" aria-label="Next bar">→</button>
+        </div>
+      </div>
+      <label class="check" for="show-all"><input type="checkbox" id="show-all"> Show water on every bar</label>
+    </div>
+
+    <div class="figure"><svg id="map" role="img" aria-label="Elevation map with the selected bar's water"></svg></div>
+    <div class="key">
+      <span><i class="sq" style="background:var(--left)"></i>tallest bar on the left (bar i counts)</span>
+      <span><i class="sq" style="background:var(--right)"></i>tallest bar on the right (bar i counts)</span>
+      <span><i class="sw" style="background:var(--muted);opacity:.7"></i>dashed: the higher level, which water can't reach</span>
+    </div>
+    <p class="hint">Click a column, drag the slider, or use the arrow keys.</p>
+
+    <div class="readout" aria-live="polite">
+      <div class="eq" id="eq"></div>
+      <p class="story" id="story"></p>
+      <p class="total" id="total"></p>
+    </div>
+  </div>
+
+  <section class="pass">
+    <div class="pass-intro">
+      <h2>Finding both maxima in one pass</h2>
+      <p>Scanning left and right from every bar costs <code>O(n²)</code>. Two pointers do it in one pass with two running numbers. <code>l</code> starts at the left end and <code>r</code> at the right. <code>leftMax</code> is the tallest bar <code>l</code> has passed, and <code>rightMax</code> the tallest <code>r</code> has passed. At each step the algorithm takes one bar, counts the water above it, adds that to the total, and moves the pointer past it. It never looks at that bar again. The bar it takes is the one under the pointer whose running maximum is lower. In the picture, the water row shows <code>?</code> for bars not counted yet and a number once a bar is counted.</p>
+      <h3 class="worked-title">One step, worked out: bar 2 of Example 1</h3>
+      <p>Heights: <code>[0, 2, 0, 3, 1, 0, 1, 3, 2, 1]</code>. Bar 2 has height 0. Pointer <code>l</code> is on bar 2 and pointer <code>r</code> is on bar 8.</p>
+      <ul class="worked">
+        <li><b>Left wall.</b> <code>l</code> started at the left end and has seen bars 0, 1 and 2. The tallest of them is 2, so the left wall is 2.</li>
+        <li><b>Right side.</b> <code>r</code> started at the right end and has seen bars 9 and 8. The tallest of them is 2.</li>
+        <li><b>The middle.</b> Bars 3 to 7 are not seen yet. They can only make the right side taller, never shorter. So the right wall is 2 or more.</li>
+        <li><b>Lower wall.</b> The left wall is 2 and the right wall is at least 2, so the lower wall is 2.</li>
+        <li><b>Water.</b> Water on bar 2 = 2 − 0 = 2. That is the same answer as the formula at the top of the page.</li>
+      </ul>
+      <p>This is why both pointers are needed. Without <code>r</code>, you would only know that the left wall is 2. You would not know whether the right side is lower, and if it were, the water would spill out that way.</p>
+      <p>Every step does the same thing for one bar, then moves that pointer one bar inward. When the right side is the lower one, it works the same way with left and right swapped. Each bar is counted exactly once. Click Next below until step 4 to see this exact case in the picture; in its equation, <code>≥</code> marks the side that is only known as "this much or more".</p>
+      <p>Extra space is <code>O(1)</code>: just <code>l</code>, <code>r</code>, <code>leftMax</code>, <code>rightMax</code> and a running total. The site's "aim for <code>O(n)</code> space" is a ceiling, not a requirement. The water row under the picture is only there so you can watch; the algorithm adds each amount to the total and forgets it.</p>
+      <p class="note">About the <code>O(…)</code> notation: it says how the amount of work (or memory) grows with the number of bars <code>n</code>, ignoring constant factors. <code>O(n²)</code> is about <code>n × n</code> steps: 400 million for 20,000 bars. <code>O(n)</code> is about <code>n</code> steps: 20,000. <code>O(1)</code> extra space means a fixed handful of numbers, however many bars there are.</p>
+    </div>
+    <div class="panel">
+      <div class="stepper">
+        <button type="button" id="tp-reset">Restart</button>
+        <button type="button" id="tp-back">← Back</button>
+        <button type="button" id="tp-next" class="primary">Next →</button>
+        <span class="counter" id="tp-counter"></span>
+      </div>
+      <div class="figure"><svg id="tp" role="img" aria-label="Two-pointer pass over the elevation map"></svg></div>
+      <div class="key">
+        <span><i class="sw" style="background:var(--left)"></i>leftMax: tallest bar l has passed</span>
+        <span><i class="sw" style="background:var(--right)"></i>rightMax: tallest bar r has passed</span>
+        <span><i class="sq" style="background:var(--sel);border:1px solid var(--rule)"></i>not looked at yet</span>
+      </div>
+      <div class="readout" aria-live="polite">
+        <div class="eq" id="tp-eq"></div>
+        <div class="story" id="tp-story"></div>
+        <p class="total" id="tp-total"></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="why">
+    <section class="wide">
+      <h2>Why the tallest bar, not the nearest taller one</h2>
+      <p>"The greater element to the left" means the tallest bar anywhere on the left, not the first bar that happens to be taller. In Example 1, look at bar 5. Its nearest taller neighbours are bars 4 and 6, both 1 tall. If they were the walls, bar 5 would hold 1 unit. It actually holds 3.</p>
+      <div class="panel">
+        <div class="figure"><svg id="nearest" role="img" aria-label="Bar 5 of Example 1: nearest taller bars give level 1, tallest bars give level 3"></svg></div>
+        <div class="key">
+          <span><i class="sw" style="background:var(--wrong)"></i>level from the nearest taller bars: 1</span>
+          <span><i class="sq" style="background:var(--water-fill)"></i>real water: up to 3</span>
+        </div>
+      </div>
+      <p>Bars 4 and 6 are under water themselves, so they don't hold anything back. Bars 3 to 7 form one pool, and the whole pool fills to the height of the walls at its two ends. Those walls are exactly the tallest bars on each side of bar 5.</p>
+    </section>
+
+    <section>
+      <h2>Why the lower of the two</h2>
+      <p>Water rising above bar <code>i</code> is held in by both walls at once. When it reaches the top of the lower wall it pours over that side, so it can never get higher than that. The taller wall doesn't help past that point. That's the dashed line in the picture: a level the water never reaches.</p>
+    </section>
+
+    <section>
+      <h2>Why subtract height[i]</h2>
+      <p>The water level is measured from the ground, but the bottom <code>height[i]</code> units of the column are solid bar. Only the part between the bar's top and the water level is water: <code>level − height[i]</code>. Count the blue squares in the selected column and you get the same number.</p>
+    </section>
+
+    <section>
+      <h2>Why it's never negative</h2>
+      <p>Bar <code>i</code> counts as one of the bars on its own left and on its own right. So both maxima are at least <code>height[i]</code>, and so is their minimum. When bar <code>i</code> is the tallest on one side, that side's maximum is the bar itself and the formula gives 0: any water on top of it would just run off. Try bar 3 of Example 1.</p>
+    </section>
+
+    <section>
+      <h2>From one bar to the whole map</h2>
+      <p>Bars are 1 unit wide, so the water over each bar is a column of unit squares. The total is the sum of the formula over every bar. Tick <b>Show water on every bar</b> above: for Example 1 it's 0 + 0 + 2 + 0 + 2 + 3 + 2 + 0 + 0 + 0 = 9.</p>
+    </section>
+  </div>
+</main>
+
+<script>
+(() => {
+  const EXAMPLES = {
+    ex1: { h: [0, 2, 0, 3, 1, 0, 1, 3, 2, 1], i: 5 },
+    lc: { h: [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1], i: 5 },
+    pool: { h: [4, 2, 0, 3, 2, 5], i: 2 },
+  };
+  const NS = "http://www.w3.org/2000/svg";
+  const $ = (id) => document.getElementById(id);
+
+  let h = EXAMPLES.ex1.h, sel = EXAMPLES.ex1.i;
+
+  // Nearest index holding the maximum of h[0..i] (or h[i..n-1]); ties keep the closer bar.
+  function leftMax(h, i) { let b = i; for (let j = i - 1; j >= 0; j--) if (h[j] > h[b]) b = j; return b; }
+  function rightMax(h, i) { let b = i; for (let j = i + 1; j < h.length; j++) if (h[j] > h[b]) b = j; return b; }
+  function nearestTaller(h, i, dir) {
+    for (let j = i + dir; j >= 0 && j < h.length; j += dir) if (h[j] > h[i]) return j;
+    return -1;
+  }
+  const waterAt = (h, j) => Math.min(h[leftMax(h, j)], h[rightMax(h, j)]) - h[j];
+
+  function el(name, attrs, text) {
+    const node = document.createElementNS(NS, name);
+    for (const k in attrs) node.setAttribute(k, attrs[k]);
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function draw(svg, h, i, opts) {
+    svg.replaceChildren();
+    const n = h.length;
+    const maxH = Math.max(1, ...h);
+    const W = 680, padL = 58, padR = 14, top = 40;
+    const s = Math.min(46, (W - padL - padR) / n, 280 / maxH);
+    const x0 = padL + ((W - padL - padR) - n * s) / 2;
+    const base = top + maxH * s;
+    const rows = opts.showAll ? 3 : 2;
+    const H = base + 14 + rows * 20 + 6;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const X = (j) => x0 + j * s;
+    const Y = (v) => base - v * s;
+
+    const lm = leftMax(h, i), rm = rightMax(h, i);
+    const L = h[lm], R = h[rm], level = Math.min(L, R);
+
+    svg.append(el("rect", { x: X(i), y: top - 34, width: s, height: base - top + 34, class: "band" }));
+    for (let v = 1; v <= maxH; v++) svg.append(el("line", { x1: X(0), x2: X(n), y1: Y(v), y2: Y(v), class: "paper" }));
+    for (let j = 0; j <= n; j++) svg.append(el("line", { x1: X(j), x2: X(j), y1: Y(maxH), y2: base, class: "paper" }));
+
+    for (let j = 0; j < n; j++) {
+      const w = j === i ? level - h[j] : (opts.showAll ? waterAt(h, j) : 0);
+      if (w > 0) svg.append(el("rect", { x: X(j), y: Y(h[j] + w), width: s, height: w * s, class: "water" + (j === i ? "" : " other") }));
+    }
+
+    for (let j = 0; j < n; j++) {
+      if (!h[j]) continue;
+      let cls = "bar";
+      if (j === lm && j === rm) cls += " both";
+      else if (j === lm) cls += " lmax";
+      else if (j === rm) cls += " rmax";
+      svg.append(el("rect", { x: X(j), y: Y(h[j]), width: s, height: h[j] * s, class: cls }));
+    }
+
+    // Unit-square seams over bars and water, so units can be counted.
+    for (let j = 0; j < n; j++) {
+      const w = j === i ? level - h[j] : (opts.showAll ? waterAt(h, j) : 0);
+      const filled = h[j] + Math.max(0, w);
+      for (let v = 1; v < filled; v++) svg.append(el("line", { x1: X(j), x2: X(j + 1), y1: Y(v), y2: Y(v), class: "unit" }));
+    }
+
+    // Level lines: from each wall's top across to bar i. The higher one is dashed.
+    const lClass = "lvl l" + (L > R ? " spill" : "");
+    const rClass = "lvl r" + (R > L ? " spill" : "");
+    svg.append(el("line", { x1: X(lm), x2: X(i + 1), y1: Y(L), y2: Y(L), class: lClass }));
+    svg.append(el("line", { x1: X(i), x2: X(rm + 1), y1: Y(R), y2: Y(R), class: rClass }));
+
+    const clampX = (x, anchor, width) => anchor === "end" ? Math.max(x, width + 4) : Math.min(x, W - width - 4);
+    const lText = lm === i ? `left max ${L} (itself)` : `left max ${L}`;
+    const rText = rm === i ? `right max ${R} (itself)` : `right max ${R}`;
+    const lw = lText.length * 7.3, rw = rText.length * 7.3;
+    const sameLine = L === R && Math.abs(lm - rm) <= 1;
+    svg.append(el("text", { x: clampX(X(lm + 1) - 2, "end", lw), y: Y(L) - (sameLine ? 22 : 8), class: "tag l", "text-anchor": "end" }, lText));
+    svg.append(el("text", { x: clampX(X(rm) + 2, "start", rw), y: Y(R) - 8, class: "tag r", "text-anchor": "start" }, rText));
+
+    if (opts.nearest) {
+      const nl = nearestTaller(h, i, -1), nr = nearestTaller(h, i, 1);
+      if (nl >= 0 && nr >= 0) {
+        const nv = Math.min(h[nl], h[nr]);
+        svg.append(el("line", { x1: X(nl), x2: X(nr + 1), y1: Y(nv), y2: Y(nv), class: "lvl wrong" }));
+        svg.append(el("text", { x: X(nr + 1) + 6, y: Y(nv) + 4, class: "tag wrong", "text-anchor": "start" }, `nearest taller: ${nv}`));
+      }
+    }
+
+    const w = level - h[i];
+    if (w > 0 && w * s >= 18) svg.append(el("text", { x: X(i) + s / 2, y: Y(h[i] + w / 2), class: "amt" }, w));
+
+    svg.append(el("line", { x1: X(0) - 6, x2: X(n) + 6, y1: base, y2: base, class: "floor" }));
+
+    const rowY = (k) => base + 14 + k * 20 + 10;
+    svg.append(el("text", { x: X(0) - 10, y: rowY(0), class: "rowname" }, "height"));
+    svg.append(el("text", { x: X(0) - 10, y: rowY(1), class: "rowname" }, "i"));
+    if (opts.showAll) svg.append(el("text", { x: X(0) - 10, y: rowY(2), class: "rowname" }, "water"));
+    for (let j = 0; j < n; j++) {
+      const cx = X(j) + s / 2;
+      svg.append(el("text", { x: cx, y: rowY(0), class: "lab" + (j === i ? " sel" : "") }, h[j]));
+      svg.append(el("text", { x: cx, y: rowY(1), class: "lab" + (j === i ? " sel" : "") }, j));
+      if (opts.showAll) svg.append(el("text", { x: cx, y: rowY(2), class: "lab w" }, waterAt(h, j)));
+    }
+
+    if (opts.onPick) {
+      for (let j = 0; j < n; j++) {
+        const hit = el("rect", { x: X(j), y: 0, width: s, height: H, class: "col-hit" });
+        hit.append(el("title", {}, `bar ${j}, height ${h[j]}`));
+        hit.addEventListener("click", () => opts.onPick(j));
+        svg.append(hit);
+      }
+    }
+  }
+
+  function readout() {
+    const lm = leftMax(h, sel), rm = rightMax(h, sel);
+    const L = h[lm], R = h[rm], level = Math.min(L, R), w = level - h[sel];
+    $("eq").innerHTML =
+      `<span>water[${sel}]</span><span class="muted">=</span>` +
+      `<span>min(<span class="l">${L}</span>, <span class="r">${R}</span>) − ${h[sel]}</span>` +
+      `<span class="muted">=</span><span>${level} − ${h[sel]}</span><span class="muted">=</span><span class="w">${w}</span>`;
+
+    const leftWall = lm === sel ? `bar ${sel} itself (nothing on its left is taller)` : `bar ${lm}, height ${L}`;
+    const rightWall = rm === sel ? `bar ${sel} itself (nothing on its right is taller)` : `bar ${rm}, height ${R}`;
+    let story;
+    if (w === 0) {
+      const side = lm === sel && rm === sel ? "either side" : (lm === sel ? "the left" : "the right");
+      story = `Nothing on ${side} of bar ${sel} is taller than it, so that side's maximum is bar ${sel} itself (height ${h[sel]}). ` +
+        `Water poured on top would run straight off ${side === "either side" ? "it" : "that side"}. Bar ${sel} holds 0.`;
+    } else {
+      story = `Tallest on the left: ${leftWall}. Tallest on the right: ${rightWall}. ` +
+        `The water over bar ${sel} rises to the lower of the two, ${level}` +
+        (L !== R ? `; above that it would pour out over the ${L < R ? "left" : "right"} side` : "") +
+        `. Bar ${sel} fills the bottom ${h[sel]}, so ${w} unit${w === 1 ? "" : "s"} of water sit on it.`;
+    }
+    $("story").textContent = story;
+
+    const all = h.map((_, j) => waterAt(h, j));
+    $("total").innerHTML = $("show-all").checked
+      ? `Whole map: ${all.join(" + ")} = <b>${all.reduce((a, b) => a + b, 0)}</b>`
+      : "";
+  }
+
+  function render() {
+    $("pos").max = h.length - 1;
+    $("pos").value = sel;
+    $("prev").disabled = sel === 0;
+    $("next").disabled = sel === h.length - 1;
+    draw($("map"), h, sel, { showAll: $("show-all").checked, onPick: (j) => { sel = j; render(); } });
+    readout();
+  }
+
+  function setSel(j) { sel = Math.max(0, Math.min(h.length - 1, j)); render(); }
+
+  // ---- two-pointer pass ----
+  function twoPointerSteps(h) {
+    const n = h.length, steps = [], water = Array(n).fill(null);
+    let l = 0, r = n - 1, lmax = -1, rmax = -1, li = 0, ri = n - 1;
+    while (l <= r) {
+      if (h[l] >= lmax) { lmax = h[l]; li = l; }
+      if (h[r] >= rmax) { rmax = h[r]; ri = r; }
+      const side = lmax <= rmax ? "l" : "r";
+      const k = side === "l" ? l : r;
+      const w = (side === "l" ? lmax : rmax) - h[k];
+      water[k] = w;
+      steps.push({ l, r, lmax, rmax, li, ri, side, k, w, water: water.slice() });
+      if (side === "l") l++; else r--;
+    }
+    steps.push({ done: true, water: water.slice() });
+    return steps;
+  }
+
+  let tpSteps = [], tpAt = 0;
+
+  function drawTP(svg, h, st) {
+    svg.replaceChildren();
+    const n = h.length, maxH = Math.max(1, ...h);
+    const W = 680, padL = 58, padR = 14, top = 40;
+    const s = Math.min(46, (W - padL - padR) / n, 280 / maxH);
+    const x0 = padL + ((W - padL - padR) - n * s) / 2;
+    const base = top + maxH * s;
+    const H = base + 14 + 4 * 20 + 6;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const X = (j) => x0 + j * s;
+    const Y = (v) => base - v * s;
+
+    if (!st.done && st.r - st.l > 1) {
+      svg.append(el("rect", { x: X(st.l + 1), y: top - 34, width: (st.r - st.l - 1) * s, height: base - top + 34, class: "unseen" }));
+      if ((st.r - st.l - 1) * s > 90) svg.append(el("text", { x: (X(st.l + 1) + X(st.r)) / 2, y: top - 20, class: "unseen-label" }, "not looked at yet"));
+    }
+    for (let v = 1; v <= maxH; v++) svg.append(el("line", { x1: X(0), x2: X(n), y1: Y(v), y2: Y(v), class: "paper" }));
+    for (let j = 0; j <= n; j++) svg.append(el("line", { x1: X(j), x2: X(j), y1: Y(maxH), y2: base, class: "paper" }));
+
+    st.water.forEach((w, j) => {
+      if (w > 0) svg.append(el("rect", { x: X(j), y: Y(h[j] + w), width: s, height: w * s, class: "water" + (!st.done && j === st.k ? "" : " other") }));
+    });
+    for (let j = 0; j < n; j++) {
+      if (!h[j]) continue;
+      let cls = "bar";
+      if (!st.done && j === st.li && j === st.ri) cls += " both";
+      else if (!st.done && j === st.li) cls += " lmax";
+      else if (!st.done && j === st.ri) cls += " rmax";
+      svg.append(el("rect", { x: X(j), y: Y(h[j]), width: s, height: h[j] * s, class: cls }));
+    }
+    st.water.forEach((w, j) => {
+      const filled = h[j] + Math.max(0, w || 0);
+      for (let v = 1; v < filled; v++) svg.append(el("line", { x1: X(j), x2: X(j + 1), y1: Y(v), y2: Y(v), class: "unit" }));
+    });
+
+    if (!st.done) {
+      svg.append(el("line", { x1: X(0), x2: X(st.l + 1), y1: Y(st.lmax), y2: Y(st.lmax), class: "lvl l" + (st.side === "r" ? " spill" : "") }));
+      svg.append(el("line", { x1: X(st.r), x2: X(n), y1: Y(st.rmax), y2: Y(st.rmax), class: "lvl r" + (st.side === "l" ? " spill" : "") }));
+      svg.append(el("text", { x: X(0) + 2, y: Y(st.lmax) - 8, class: "tag l", "text-anchor": "start" }, `leftMax ${st.lmax}`));
+      svg.append(el("text", { x: X(n) - 2, y: Y(st.rmax) - 8, class: "tag r", "text-anchor": "end" }, `rightMax ${st.rmax}`));
+      if (st.w > 0 && st.w * s >= 18) svg.append(el("text", { x: X(st.k) + s / 2, y: Y(h[st.k] + st.w / 2), class: "amt" }, st.w));
+    }
+    svg.append(el("line", { x1: X(0) - 6, x2: X(n) + 6, y1: base, y2: base, class: "floor" }));
+
+    const rowY = (k) => base + 14 + k * 20 + 10;
+    ["height", "i", "pointer", "water"].forEach((name, k) => svg.append(el("text", { x: X(0) - 10, y: rowY(k), class: "rowname" }, name)));
+    for (let j = 0; j < n; j++) {
+      const cx = X(j) + s / 2;
+      svg.append(el("text", { x: cx, y: rowY(0), class: "lab" }, h[j]));
+      svg.append(el("text", { x: cx, y: rowY(1), class: "lab" }, j));
+      if (!st.done) {
+        const p = j === st.l && j === st.r ? "lr" : j === st.l ? "l" : j === st.r ? "r" : "";
+        if (p) svg.append(el("text", { x: cx, y: rowY(2), class: "ptr" }, p));
+      }
+      const w = st.water[j];
+      svg.append(el("text", { x: cx, y: rowY(3), class: "lab " + (w === null ? "pending" : "done") }, w === null ? "?" : w));
+    }
+  }
+
+  function renderTP() {
+    const st = tpSteps[tpAt], n = h.length;
+    drawTP($("tp"), h, st);
+    $("tp-back").disabled = tpAt === 0;
+    $("tp-next").disabled = tpAt === tpSteps.length - 1;
+    $("tp-counter").textContent = st.done ? "done" : `step ${tpAt + 1} / ${n}`;
+    const total = st.water.reduce((a, w) => a + (w || 0), 0);
+    if (st.done) {
+      $("tp-eq").innerHTML = `<span>total</span><span class="muted">=</span><span class="w">${total}</span>`;
+      $("tp-story").textContent = `The water above every bar was counted exactly once: ${n} steps, one pass, and only two running maxima kept in memory. ` +
+        `The total matches the formula applied bar by bar (tick "Show water on every bar" above).`;
+      $("tp-total").innerHTML = `${st.water.join(" + ")} = <b>${total}</b>`;
+      return;
+    }
+    const { l, r, lmax, rmax, side, k, w } = st;
+    const M = side === "l" ? lmax : rmax;
+    // Same min(...) formula as the top section; "≥" marks the side known only as a lower bound.
+    const lPart = side === "r" && l !== r ? `≥ ${lmax}` : `${lmax}`;
+    const rPart = side === "l" && l !== r ? `≥ ${rmax}` : `${rmax}`;
+    $("tp-eq").innerHTML =
+      `<span>water[${k}]</span><span class="muted">=</span>` +
+      `<span>min(<span class="l">${lPart}</span>, <span class="r">${rPart}</span>) − ${h[k]}</span>` +
+      `<span class="muted">=</span><span>${M} − ${h[k]}</span><span class="muted">=</span><span class="w">${w}</span>`;
+    // Numbers in the mono face: its slashed zero can't be mistaken for the letter O.
+    const N = (v) => `<span class="num">${v}</span>`;
+    const bars = (a, b) => a === b ? `bar ${N(a)}` : `bars ${N(a)}–${N(b)}`;
+    const leftSeen = `l has seen ${bars(0, l)}. The tallest of them is ${N(lmax)}.`;
+    const rightSeen = `r has seen ${bars(r, n - 1)}. The tallest of them is ${N(rmax)}.`;
+    const gap = r - l - 1;
+    const unseen = gap > 0
+      ? `${gap === 1 ? `Bar ${N(l + 1)} is` : `Bars ${N(l + 1)}–${N(r - 1)} are`} not seen yet. They can only make that side taller, never shorter. `
+      : "";
+    let lines;
+    if (l === r) {
+      lines = [
+        `Left wall of bar ${N(k)}: ${leftSeen}`,
+        `Right wall of bar ${N(k)}: ${rightSeen}`,
+        `Every bar has been seen now. The lower wall is ${N(M)}.`,
+        `Water on bar ${N(k)} = ${N(M)} − ${N(h[k])} = ${N(w)}. This was the last bar.`,
+      ];
+    } else if (side === "l") {
+      lines = [
+        `Left wall of bar ${N(l)}: ${leftSeen}`,
+        `Right wall of bar ${N(l)}: ${rightSeen} ${unseen}So the right wall is ${N(rmax)} or more.`,
+        `${N(lmax)} is not more than "${N(rmax)} or more", so the lower wall is ${N(lmax)}.`,
+        `Water on bar ${N(l)} = ${N(lmax)} − ${N(h[l])} = ${N(w)}. Next: move l to bar ${N(l + 1)}.`,
+      ];
+    } else {
+      lines = [
+        `Right wall of bar ${N(r)}: ${rightSeen}`,
+        `Left wall of bar ${N(r)}: ${leftSeen} ${unseen}So the left wall is ${N(lmax)} or more.`,
+        `${N(rmax)} is less than "${N(lmax)} or more", so the lower wall is ${N(rmax)}.`,
+        `Water on bar ${N(r)} = ${N(rmax)} − ${N(h[r])} = ${N(w)}. Next: move r to bar ${N(r - 1)}.`,
+      ];
+    }
+    $("tp-story").innerHTML = `<ul class="steps">${lines.map((s) => `<li>${s}</li>`).join("")}</ul>`;
+    $("tp-total").innerHTML = `water counted so far: <b>${total}</b>`;
+  }
+
+  function resetTP() { tpSteps = twoPointerSteps(h); tpAt = 0; renderTP(); }
+  $("tp-next").addEventListener("click", () => { if (tpAt < tpSteps.length - 1) { tpAt++; renderTP(); } });
+  $("tp-back").addEventListener("click", () => { if (tpAt > 0) { tpAt--; renderTP(); } });
+  $("tp-reset").addEventListener("click", () => { tpAt = 0; renderTP(); });
+
+  $("pos").addEventListener("input", (e) => setSel(Number(e.target.value)));
+  $("prev").addEventListener("click", () => setSel(sel - 1));
+  $("next").addEventListener("click", () => setSel(sel + 1));
+  $("show-all").addEventListener("change", render);
+  $("example").addEventListener("change", (e) => {
+    $("error").textContent = "";
+    const ex = EXAMPLES[e.target.value];
+    h = ex.h; sel = ex.i; render(); resetTP();
+  });
+  $("custom-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nums = $("heights-input").value.split(/[\s,\[\]]+/).filter(Boolean).map(Number);
+    if (nums.length < 2 || nums.length > 16) { $("error").textContent = "Enter between 2 and 16 heights, separated by commas."; return; }
+    if (nums.some((v) => !Number.isInteger(v) || v < 0 || v > 12)) { $("error").textContent = "Each height must be a whole number from 0 to 12, so the squares stay countable."; return; }
+    $("error").textContent = "";
+    h = nums;
+    sel = Math.floor(nums.length / 2);
+    render();
+    resetTP();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.target.closest("input, select")) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); setSel(sel + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); setSel(sel - 1); }
+  });
+
+  draw($("nearest"), EXAMPLES.ex1.h, 5, { nearest: true, showAll: false });
+  render();
+  resetTP();
+})();
+</script>
