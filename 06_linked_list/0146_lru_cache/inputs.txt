@@ -1,0 +1,90 @@
+# Test cases for LRU Cache — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each line is one call on the same object; the first line creates it.
+# `-> value` after a call is the value it must return; calls without `->` aren't checked.
+# Values are JSON (true, false, null, "text") or Python expressions.
+
+# Example 1
+LRUCache(2)
+put(1, 1)
+put(2, 2)
+get(1) -> 1
+put(3, 3)
+get(2) -> -1
+put(4, 4)
+get(1) -> -1
+get(3) -> 3
+get(4) -> 4
+
+# capacity 1: every new key removes the old one
+LRUCache(1)
+put(1, 10)
+get(1) -> 10
+put(2, 20)
+get(1) -> -1
+get(2) -> 20
+
+# get on an empty cache
+LRUCache(2)
+get(5) -> -1
+
+# put on an existing key updates it and removes nothing
+LRUCache(2)
+put(1, 1)
+put(2, 2)
+put(1, 10)
+get(1) -> 10
+get(2) -> 2
+
+# updating a key makes it the most recently used
+LRUCache(2)
+put(2, 1)
+put(1, 1)
+put(2, 3)
+put(4, 1)
+get(1) -> -1
+get(2) -> 3
+
+# get makes a key the most recently used
+LRUCache(2)
+put(1, 1)
+put(2, 2)
+get(1) -> 1
+put(3, 3)
+get(2) -> -1
+get(1) -> 1
+get(3) -> 3
+
+# a get that misses doesn't change the order
+LRUCache(2)
+put(1, 1)
+put(2, 2)
+get(3) -> -1
+put(4, 4)
+get(1) -> -1
+get(2) -> 2
+get(4) -> 4
+
+# key 0 and value 0 are real entries; keys and values at their limits
+LRUCache(2)
+put(0, 0)
+get(0) -> 0
+put(10000, 100000)
+get(10000) -> 100000
+get(0) -> 0
+
+# capacity 3: the order follows use, not insertion
+LRUCache(3)
+put(1, 1)
+put(2, 2)
+put(3, 3)
+get(1) -> 1
+get(2) -> 2
+put(4, 4)
+get(3) -> -1
+get(4) -> 4
+put(5, 5)
+get(1) -> -1
+get(2) -> 2
+get(5) -> 5

@@ -1,0 +1,52 @@
+# Test cases for Binary Tree Paths — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions.
+# A tree is written in LeetCode's level order, with null for a missing child.
+# Leave `expected` out to just see what your solution returns.
+# The paths may come back in any order.
+
+# Example 1
+root = [1,2,3,null,5]
+expected = ["1->2->5","1->3"]
+
+# Example 2
+root = [1]
+expected = ["1"]
+
+# root with one child is not a leaf
+root = [1, 2]
+expected = ["1->2"]
+
+# only left children
+root = [1, 2, null, 3]
+expected = ["1->2->3"]
+
+# only right children
+root = [1, null, 2, null, 3]
+expected = ["1->2->3"]
+
+# negative values: "-" next to "->"
+root = [-1, -2, -3]
+expected = ["-1->-2", "-1->-3"]
+
+# zero and the value extremes
+root = [0, 100, -100]
+expected = ["0->100", "0->-100"]
+
+# full tree of depth 3
+root = [1, 2, 3, 4, 5, 6, 7]
+expected = ["1->2->4", "1->2->5", "1->3->6", "1->3->7"]
+
+# two different paths with the same text
+root = [1, 1, 1]
+expected = ["1->1", "1->1"]
+
+# leaves at different depths
+root = [5, 4, 8, 11, null, 13, 4, 7, 2, null, null, null, 1]
+expected = ["5->4->11->7", "5->4->11->2", "5->8->13", "5->8->4->1"]
+
+# max size: 100 nodes in one chain
+root = sum([[i, null] for i in range(1, 101)], [])
+expected = ["->".join(str(i) for i in range(1, 101))]

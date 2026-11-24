@@ -1,0 +1,35 @@
+# Test cases for Reverse Linked List — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# A linked list is written as the list of its values, head first: [1, 2, 3]; [] is an empty list.
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(5000)).
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+head = [1,2,3,4,5]
+expected = [5,4,3,2,1]
+
+# Example 2
+head = [1,2]
+expected = [2,1]
+
+# Example 3: empty list
+head = []
+expected = []
+
+# single node
+head = [7]
+expected = [7]
+
+# three nodes
+head = [1, 2, 3]
+expected = [3, 2, 1]
+
+# repeated and negative values, -5000 and 5000
+head = [-5000, 0, 0, 5000, -1]
+expected = [-1, 5000, 0, 0, -5000]
+
+# max size: 5000 nodes, deep for a recursive solution
+head = list(range(5000))
+expected = list(range(4999, -1, -1))

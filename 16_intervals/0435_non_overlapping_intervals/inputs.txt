@@ -1,0 +1,54 @@
+# Test cases for Non-overlapping Intervals — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [[i, i + 1] for i in range(100)].
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+intervals = [[1, 2], [2, 3], [3, 4], [1, 3]]
+expected = 1
+
+# Example 2
+intervals = [[1, 2], [1, 2], [1, 2]]
+expected = 2
+
+# Example 3
+intervals = [[1, 2], [2, 3]]
+expected = 0
+
+# single interval
+intervals = [[1, 2]]
+expected = 0
+
+# unsorted, nothing overlaps
+intervals = [[5, 6], [1, 2], [3, 4]]
+expected = 0
+
+# one long interval over a chain of short ones
+intervals = [[1, 100], [1, 2], [2, 3], [3, 4]]
+expected = 1
+
+# nested intervals
+intervals = [[1, 10], [2, 9], [3, 8]]
+expected = 2
+
+# negative coordinates
+intervals = [[-5, -3], [-4, -1], [-1, 2]]
+expected = 1
+
+# unsorted, with overlaps
+intervals = [[3, 5], [1, 3], [2, 4]]
+expected = 1
+
+# coordinate extremes
+intervals = [[-50000, 50000], [-50000, 0], [0, 50000]]
+expected = 1
+
+# stress: 10^5 intervals, every unit interval appears twice
+intervals = [[i % 50000 - 25000, i % 50000 - 24999] for i in range(100000)]
+expected = 50000
+
+# stress: 10^5 intervals in reverse order, each touches the next
+intervals = [[i, i + 1] for i in range(49999, -50001, -1)]
+expected = 0

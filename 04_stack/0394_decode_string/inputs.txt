@@ -1,0 +1,54 @@
+# Test cases for Decode String — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like "a" * 300.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+s = "3[a]2[bc]"
+expected = "aaabcbc"
+
+# Example 2
+s = "3[a2[c]]"
+expected = "accaccacc"
+
+# Example 3
+s = "2[abc]3[cd]ef"
+expected = "abcabccdcdcdef"
+
+# no brackets at all
+s = "abc"
+expected = "abc"
+
+# count of 1
+s = "1[ab]"
+expected = "ab"
+
+# count with two digits
+s = "10[a]"
+expected = "a" * 10
+
+# letters before, inside and after nested groups
+s = "ab2[c3[d]]e"
+expected = "abcdddcddde"
+
+# group with letters on both sides of an inner group
+s = "2[a2[b]c]"
+expected = "abbcabbc"
+
+# three levels of nesting
+s = "2[2[2[a]]]"
+expected = "a" * 8
+
+# several groups inside one group
+s = "3[z]2[2[y]pq4[2[jk]e1[f]]]ef"
+expected = "zzz" + ("yypq" + "jkjkef" * 4) * 2 + "ef"
+
+# largest count, three digits
+s = "300[ab]"
+expected = "ab" * 300
+
+# largest output: 90000 characters
+s = "300[300[a]]"
+expected = "a" * 90000

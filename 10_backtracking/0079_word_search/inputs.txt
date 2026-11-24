@@ -1,0 +1,61 @@
+# Test cases for Word Search — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [["A"] * 6 for _ in range(6)].
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+word = "ABCCED"
+expected = true
+
+# Example 2
+board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+word = "SEE"
+expected = true
+
+# Example 3
+board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]
+word = "ABCB"
+expected = false
+
+# single cell, same letter
+board = [["a"]]
+word = "a"
+expected = true
+
+# letters are case-sensitive
+board = [["a"]]
+word = "A"
+expected = false
+
+# a cell can't be used twice
+board = [["a", "b"]]
+word = "aba"
+expected = false
+
+# diagonal neighbours don't count
+board = [["A", "B"], ["C", "D"]]
+word = "AD"
+expected = false
+
+# the path turns corners
+board = [["A", "B"], ["D", "C"]]
+word = "ABCD"
+expected = true
+
+# the first matching start leads nowhere
+board = [["C", "A", "A"], ["A", "A", "A"], ["B", "C", "D"]]
+word = "AAB"
+expected = true
+
+# cells must be freed after a dead end
+board = [["A", "B", "C", "E"], ["S", "F", "E", "S"], ["A", "D", "E", "E"]]
+word = "ABCESEEEFS"
+expected = true
+
+# 6 x 6 board of one letter, last letter missing
+board = [["A"] * 6 for _ in range(6)]
+word = "A" * 11 + "B"
+expected = false

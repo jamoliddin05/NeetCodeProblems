@@ -1,0 +1,31 @@
+# Test cases for Subsets — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(10)).
+# Leave `expected` out to just see what your solution returns.
+# The subsets, and the numbers inside each subset, may come back in any order.
+
+# Example 1
+nums = [1,2,3]
+expected = [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+
+# Example 2
+nums = [0]
+expected = [[],[0]]
+
+# two elements at the value extremes
+nums = [-10, 10]
+expected = [[], [-10], [10], [-10, 10]]
+
+# unsorted input
+nums = [3, 1, 2]
+expected = [[], [3], [1], [2], [3, 1], [3, 2], [1, 2], [3, 1, 2]]
+
+# four elements with negatives and zero: 16 subsets
+nums = [4, -2, 0, 7]
+expected = [[], [4], [-2], [0], [7], [4, -2], [4, 0], [4, 7], [-2, 0], [-2, 7], [0, 7], [4, -2, 0], [4, -2, 7], [4, 0, 7], [-2, 0, 7], [4, -2, 0, 7]]
+
+# max length: 10 elements, 1024 subsets
+nums = list(range(10))
+expected = [[x for x in range(10) if m >> x & 1] for m in range(1024)]

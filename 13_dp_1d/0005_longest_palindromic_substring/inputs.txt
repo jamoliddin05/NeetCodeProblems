@@ -1,0 +1,56 @@
+# Test cases for Longest Palindromic Substring — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is one correct answer: any other palindrome
+# of the same length that appears in `s` passes too.
+# Values are JSON (true, false, null, "text") or Python expressions like "a" * 1000.
+# `random` in an expression is seeded from the expression's text, so the data is the same on every run.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+s = "babad"
+expected = "bab"
+
+# Example 2
+s = "cbbd"
+expected = "bb"
+
+# single character
+s = "a"
+expected = "a"
+
+# two different characters: any one of them
+s = "ac"
+expected = "a"
+
+# first and last letters match, nothing longer than one letter
+s = "abcda"
+expected = "a"
+
+# whole string, odd length
+s = "racecar"
+expected = "racecar"
+
+# whole string, even length
+s = "abba"
+expected = "abba"
+
+# palindrome at the very end
+s = "abcxyzzyx"
+expected = "xyzzyx"
+
+# upper and lower case are different characters
+s = "Abba"
+expected = "bb"
+
+# digits
+s = "ab12321"
+expected = "12321"
+
+# 1000 equal letters: checking every substring separately is too slow
+s = "a" * 1000
+expected = "a" * 1000
+
+# 1000 random a's and b's
+s = "".join(random.choices("ab", k=1000))
+expected = "bbaaaabaaaaaaaabaaaabb"

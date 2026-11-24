@@ -1,0 +1,49 @@
+# Test cases for Pacific Atlantic Water Flow — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [[r + c for c in range(200)] for r in range(200)].
+# Leave `expected` out to just see what your solution returns.
+# Any order of cells is accepted: [[1,0],[0,1]] passes when expected is [[0,1],[1,0]].
+
+# Example 1
+heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]
+expected = [[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
+
+# Example 2
+heights = [[1]]
+expected = [[0,0]]
+
+# single row: every cell touches both oceans
+heights = [[1,2,3]]
+expected = [[0,0],[0,1],[0,2]]
+
+# single column: every cell touches both oceans
+heights = [[3],[1],[2]]
+expected = [[0,0],[1,0],[2,0]]
+
+# all cells the same height: water moves across equal heights
+heights = [[5,5,5],[5,5,5],[5,5,5]]
+expected = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+
+# heights rise toward the bottom-right corner
+heights = [[1,2,3],[2,3,4],[3,4,5]]
+expected = [[0,2],[1,2],[2,0],[2,1],[2,2]]
+
+# deep pit in the middle cannot drain, extreme heights
+heights = [[100000,100000,100000],[100000,0,100000],[100000,100000,100000]]
+expected = [[0,0],[0,1],[0,2],[1,0],[1,2],[2,0],[2,1],[2,2]]
+
+# spiral: some paths turn back toward the top
+heights = [[1,2,3],[8,9,4],[7,6,5]]
+expected = [[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+
+# 200 x 200 rising toward the bottom-right
+# Only the right column and the bottom row reach the Atlantic.
+heights = [[r + c for c in range(200)] for r in range(200)]
+expected = [[r, 199] for r in range(200)] + [[199, c] for c in range(199)]
+
+# 200 x 200 falling toward the bottom-right
+# Only the top row and the left column reach the Pacific.
+heights = [[400 - r - c for c in range(200)] for r in range(200)]
+expected = [[0, c] for c in range(200)] + [[r, 0] for r in range(1, 200)]

@@ -1,0 +1,39 @@
+# Test cases for Reorder List — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the list after your method has changed it.
+# A linked list is written as the list of its values, head first: [1, 2, 3].
+# Values are JSON (true, false, null, "text") or Python expressions like [1] * 25000 + [2] * 25000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+head = [1,2,3,4]
+expected = [1,4,2,3]
+
+# Example 2
+head = [1,2,3,4,5]
+expected = [1,5,2,4,3]
+
+# single node
+head = [1]
+expected = [1]
+
+# two nodes: nothing moves
+head = [1, 2]
+expected = [1, 2]
+
+# three nodes
+head = [1, 2, 3]
+expected = [1, 3, 2]
+
+# six nodes
+head = [1, 2, 3, 4, 5, 6]
+expected = [1, 6, 2, 5, 3, 4]
+
+# seven nodes
+head = [10, 20, 30, 40, 50, 60, 70]
+expected = [10, 70, 20, 60, 30, 50, 40]
+
+# stress: 5 * 10^4 nodes, first half all 1, second half all 2
+head = [1] * 25000 + [2] * 25000
+expected = [1, 2] * 25000

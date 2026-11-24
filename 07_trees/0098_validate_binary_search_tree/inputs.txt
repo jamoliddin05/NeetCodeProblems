@@ -1,0 +1,55 @@
+# Test cases for Validate Binary Search Tree — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Trees are written in LeetCode's level order: [1,2,3,null,4] (null = no child in that spot).
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(10)).
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+root = [2,1,3]
+expected = true
+
+# Example 2
+root = [5,1,4,null,null,3,6]
+expected = false
+
+# single node
+root = [0]
+expected = true
+
+# left child equal to its parent
+root = [2,2]
+expected = false
+
+# right child equal to its parent
+root = [2,null,2]
+expected = false
+
+# right subtree holds a value smaller than the root, below the first level
+root = [5,4,6,null,null,3,7]
+expected = false
+
+# left subtree holds a value bigger than the root, below the first level
+root = [10,5,15,null,11]
+expected = false
+
+# valid tree with four full levels
+root = [8,4,12,2,6,10,14,1,3,5,7,9,11,13,15]
+expected = true
+
+# 32-bit extremes, valid
+root = [0,-2147483648,2147483647]
+expected = true
+
+# 32-bit maximum repeated
+root = [2147483647,null,2147483647]
+expected = false
+
+# max size: chain of 10^4 nodes going right, increasing values
+root = [0] + [x for v in range(1, 10000) for x in (null, v)]
+expected = true
+
+# max size: chain of 10^4 nodes going left, the deepest node is bigger than an ancestor
+root = [9999] + [x for v in range(9998, 0, -1) for x in (v, null)] + [null, 9999]
+expected = false

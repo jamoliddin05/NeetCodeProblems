@@ -1,0 +1,46 @@
+# Test cases for Best Time to Buy and Sell Stock — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [5] * 100000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+prices = [7, 1, 5, 3, 6, 4]
+expected = 5
+
+# Example 2
+prices = [7, 6, 4, 3, 1]
+expected = 0
+
+# single day: nothing to sell on
+prices = [5]
+expected = 0
+
+# two days, price goes up
+prices = [1, 2]
+expected = 1
+
+# all prices equal
+prices = [3, 3, 3, 3]
+expected = 0
+
+# lowest price comes after the highest: max minus min is wrong
+prices = [2, 10, 1, 4]
+expected = 8
+
+# a later, lower buy price gives the best profit
+prices = [3, 8, 1, 9]
+expected = 8
+
+# price extremes: buy at 0, sell at 10^4
+prices = [0, 0, 10000]
+expected = 10000
+
+# stress: 10^5 days, price only falls
+prices = [10000 - i // 10 for i in range(100000)]
+expected = 0
+
+# stress: 10^5 days, price falls to 1, then 10^4 on the last day
+prices = [10000 - i // 10 for i in range(99999)] + [10000]
+expected = 9999

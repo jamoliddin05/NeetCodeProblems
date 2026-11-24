@@ -1,0 +1,55 @@
+# Test cases for Minimum Remove to Make Valid Parentheses — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is one correct answer.
+# Any other valid string with the same number of removals also passes (see check() in tests.py).
+# Values are JSON (true, false, null, "text") or Python expressions like "(" * 50000 + ")" * 50000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+s = "lee(t(c)o)de)"
+expected = "lee(t(c)o)de"
+
+# Example 2
+s = "a)b(c)d"
+expected = "ab(c)d"
+
+# Example 3
+s = "))(("
+expected = ""
+
+# already valid: nothing removed
+s = "a(b)c"
+expected = "a(b)c"
+
+# letters only
+s = "abc"
+expected = "abc"
+
+# single opening parenthesis
+s = "("
+expected = ""
+
+# closer before any opener
+s = ")a("
+expected = "a"
+
+# one extra opener at the start, several right answers
+s = "(a(b(c)d)"
+expected = "a(b(c)d)"
+
+# good and bad pairs mixed
+s = "())()((("
+expected = "()()"
+
+# stress: 50000 openers then 50000 closers, already valid
+s = "(" * 50000 + ")" * 50000
+expected = "(" * 50000 + ")" * 50000
+
+# stress: 50000 closers then 50000 openers, all removed
+s = ")" * 50000 + "(" * 50000
+expected = ""
+
+# stress: 10^5 characters, every opener is unmatched
+s = "(a" * 50000
+expected = "a" * 50000

@@ -1,0 +1,56 @@
+# Test cases for Search Suggestions System — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like ["a" * k for k in range(1, 200)].
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+products = ["mobile","mouse","moneypot","monitor","mousepad"]
+searchWord = "mouse"
+expected = [["mobile","moneypot","monitor"],["mobile","moneypot","monitor"],["mouse","mousepad"],["mouse","mousepad"],["mouse","mousepad"]]
+
+# Example 2
+products = ["havana"]
+searchWord = "havana"
+expected = [["havana"],["havana"],["havana"],["havana"],["havana"],["havana"]]
+
+# more than three products match: keep the three smallest, in order
+products = ["bags","baggage","banner","box","cloths"]
+searchWord = "bags"
+expected = [["baggage","bags","banner"],["baggage","bags","banner"],["baggage","bags"],["bags"]]
+
+# nothing matches, starting from the first letter
+products = ["apple"]
+searchWord = "zoo"
+expected = [[],[],[]]
+
+# matches run out partway through the word
+products = ["mobile","mouse"]
+searchWord = "mox"
+expected = [["mobile","mouse"],["mobile","mouse"],[]]
+
+# search word longer than the product
+products = ["code"]
+searchWord = "codes"
+expected = [["code"],["code"],["code"],["code"],[]]
+
+# a product equal to the typed text comes first
+products = ["mousepad","mouse","mo","m"]
+searchWord = "mou"
+expected = [["m","mo","mouse"],["mo","mouse","mousepad"],["mouse","mousepad"]]
+
+# unsorted input, exactly three match
+products = ["ac","ab","aa","b"]
+searchWord = "a"
+expected = [["aa","ab","ac"]]
+
+# alphabetical order, not length: "abz" is shorter than "abcd" but comes after it
+products = ["abz","aba","abcd","abc"]
+searchWord = "ab"
+expected = [["aba","abc","abcd"],["aba","abc","abcd"]]
+
+# max size: products "a" ... "a" * 199 (total length 19900), search word of 1000 letters
+products = ["a" * k for k in range(1, 200)]
+searchWord = "a" * 1000
+expected = [["a" * k for k in range(n, min(n + 3, 200))] for n in range(1, 1001)]

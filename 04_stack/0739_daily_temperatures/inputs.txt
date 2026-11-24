@@ -1,0 +1,54 @@
+# Test cases for Daily Temperatures — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [99] * 99999 + [100].
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+expected = [1, 1, 4, 2, 1, 1, 0, 0]
+
+# Example 2
+temperatures = [30, 40, 50, 60]
+expected = [1, 1, 1, 0]
+
+# Example 3
+temperatures = [30, 60, 90]
+expected = [1, 1, 0]
+
+# single day
+temperatures = [50]
+expected = [0]
+
+# all equal: equal is not warmer
+temperatures = [70, 70, 70]
+expected = [0, 0, 0]
+
+# only falling: nobody gets a warmer day
+temperatures = [100, 90, 80]
+expected = [0, 0, 0]
+
+# one warm day at the end answers every earlier day
+temperatures = [80, 60, 50, 40, 90]
+expected = [4, 3, 2, 1, 0]
+
+# equal days in a row wait for the same warmer day
+temperatures = [73, 72, 72, 74]
+expected = [3, 2, 1, 0]
+
+# temperature extremes
+temperatures = [30, 100, 30]
+expected = [1, 0, 0]
+
+# a warmer day that answers some waiting days but not all
+temperatures = [75, 71, 72, 69, 76]
+expected = [4, 1, 2, 1, 0]
+
+# stress: 10^5 days, only the last one is warmer
+temperatures = [99] * 99999 + [100]
+expected = [99999 - i for i in range(99999)] + [0]
+
+# stress: 10^5 days, all equal
+temperatures = [30] * 100000
+expected = [0] * 100000

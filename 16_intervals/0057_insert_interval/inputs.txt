@@ -1,0 +1,66 @@
+# Test cases for Insert Interval — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [[10 * i, 10 * i + 5] for i in range(100)].
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+intervals = [[1, 3], [6, 9]]
+newInterval = [2, 5]
+expected = [[1, 5], [6, 9]]
+
+# Example 2
+intervals = [[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]]
+newInterval = [4, 8]
+expected = [[1, 2], [3, 10], [12, 16]]
+
+# empty list
+intervals = []
+newInterval = [5, 7]
+expected = [[5, 7]]
+
+# new interval goes before all others
+intervals = [[3, 5], [6, 9]]
+newInterval = [1, 2]
+expected = [[1, 2], [3, 5], [6, 9]]
+
+# new interval goes after all others
+intervals = [[1, 2], [3, 5]]
+newInterval = [6, 8]
+expected = [[1, 2], [3, 5], [6, 8]]
+
+# fits in a gap without touching anything
+intervals = [[1, 2], [6, 7]]
+newInterval = [3, 4]
+expected = [[1, 2], [3, 4], [6, 7]]
+
+# touches the end of one interval: a shared point overlaps
+intervals = [[1, 2], [5, 6]]
+newInterval = [2, 3]
+expected = [[1, 3], [5, 6]]
+
+# touches both neighbours: all three join
+intervals = [[1, 2], [5, 6]]
+newInterval = [2, 5]
+expected = [[1, 6]]
+
+# covers every interval
+intervals = [[2, 3], [4, 5], [6, 7]]
+newInterval = [1, 8]
+expected = [[1, 8]]
+
+# lies inside one interval
+intervals = [[1, 10]]
+newInterval = [3, 4]
+expected = [[1, 10]]
+
+# zero-length new interval on the start of an existing one
+intervals = [[1, 5], [7, 9]]
+newInterval = [7, 7]
+expected = [[1, 5], [7, 9]]
+
+# stress: 10^4 intervals, the new one joins two in the middle
+intervals = [[10 * i, 10 * i + 5] for i in range(10000)]
+newInterval = [50003, 50012]
+expected = [[10 * i, 10 * i + 5] for i in range(5000)] + [[50000, 50015]] + [[10 * i, 10 * i + 5] for i in range(5002, 10000)]

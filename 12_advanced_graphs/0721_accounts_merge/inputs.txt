@@ -1,0 +1,52 @@
+# Test cases for Accounts Merge — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [["Max", "m" + str(i) + "@x.com"] for i in range(1000)].
+# Leave `expected` out to just see what your solution returns.
+# Accounts in any order are accepted; inside each account the name comes first, then the emails sorted.
+
+# Example 1
+accounts = [["John","johnsmith@mail.com","john_newyork@mail.com"],["John","johnsmith@mail.com","john00@mail.com"],["Mary","mary@mail.com"],["John","johnnybravo@mail.com"]]
+expected = [["John","john00@mail.com","john_newyork@mail.com","johnsmith@mail.com"],["Mary","mary@mail.com"],["John","johnnybravo@mail.com"]]
+
+# Example 2
+accounts = [["Gabe","Gabe0@m.co","Gabe3@m.co","Gabe1@m.co"],["Kevin","Kevin3@m.co","Kevin5@m.co","Kevin0@m.co"],["Ethan","Ethan5@m.co","Ethan4@m.co","Ethan0@m.co"],["Hanzo","Hanzo3@m.co","Hanzo1@m.co","Hanzo0@m.co"],["Fern","Fern5@m.co","Fern1@m.co","Fern0@m.co"]]
+expected = [["Ethan","Ethan0@m.co","Ethan4@m.co","Ethan5@m.co"],["Gabe","Gabe0@m.co","Gabe1@m.co","Gabe3@m.co"],["Hanzo","Hanzo0@m.co","Hanzo1@m.co","Hanzo3@m.co"],["Kevin","Kevin0@m.co","Kevin3@m.co","Kevin5@m.co"],["Fern","Fern0@m.co","Fern1@m.co","Fern5@m.co"]]
+
+# one account with one email
+accounts = [["Alex","alex@m.co"]]
+expected = [["Alex","alex@m.co"]]
+
+# emails of one account come back sorted
+accounts = [["Alex","c@m.co","a@m.co","b@m.co"]]
+expected = [["Alex","a@m.co","b@m.co","c@m.co"]]
+
+# same name, no shared email: two different people
+accounts = [["John","a@m.co"],["John","b@m.co"]]
+expected = [["John","a@m.co"],["John","b@m.co"]]
+
+# first two accounts are linked only through the third one
+accounts = [["Ann","a@m.co","b@m.co"],["Ann","c@m.co","d@m.co"],["Ann","b@m.co","c@m.co"]]
+expected = [["Ann","a@m.co","b@m.co","c@m.co","d@m.co"]]
+
+# the same account listed twice
+accounts = [["Bob","x@m.co","y@m.co"],["Bob","y@m.co","x@m.co"]]
+expected = [["Bob","x@m.co","y@m.co"]]
+
+# an email repeated inside one account appears once
+accounts = [["Bob","x@m.co","x@m.co"]]
+expected = [["Bob","x@m.co"]]
+
+# sort by character code: digits, capitals, _, small letters
+accounts = [["Zed","b@m.co","B@m.co","_a@m.co","1@m.co"]]
+expected = [["Zed","1@m.co","B@m.co","_a@m.co","b@m.co"]]
+
+# several merged people and one person with a single account
+accounts = [["A","a1@m.co"],["B","b1@m.co","b2@m.co"],["A","a2@m.co","a1@m.co"],["B","b3@m.co","b2@m.co"],["C","c@m.co"]]
+expected = [["A","a1@m.co","a2@m.co"],["B","b1@m.co","b2@m.co","b3@m.co"],["C","c@m.co"]]
+
+# max size: 1000 accounts, 9 emails each, one chain
+# Account i shares one email with account i + 1. Even accounts come first, the odd ones that join them after.
+accounts = [["Max"] + ["m" + str(8 * i + j) + "@x.com" for j in range(9)] for i in list(range(0, 1000, 2)) + list(range(1, 1000, 2))]
+expected = [["Max"] + sorted("m" + str(i) + "@x.com" for i in range(8001))]

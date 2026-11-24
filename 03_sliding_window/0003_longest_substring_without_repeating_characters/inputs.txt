@@ -1,0 +1,50 @@
+# Test cases for Longest Substring Without Repeating Characters — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like "ab" * 50000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+s = "abcabcbb"
+expected = 3
+
+# Example 2
+s = "bbbbb"
+expected = 1
+
+# Example 3
+s = "pwwkew"
+expected = 3
+
+# empty string
+s = ""
+expected = 0
+
+# a single space is a character too
+s = " "
+expected = 1
+
+# all characters different: the whole string
+s = "abcdef"
+expected = 6
+
+# repeat of a character that already left the block
+s = "abba"
+expected = 2
+
+# starting over after a repeat loses characters
+s = "dvdf"
+expected = 3
+
+# upper and lower case, digits and symbols are all different
+s = "aA1!aA"
+expected = 4
+
+# stress: 10^5 characters, all 95 printable ASCII characters in a cycle
+s = "".join(chr(32 + i % 95) for i in range(100000))
+expected = 95
+
+# stress: 10^5 copies of one letter
+s = "a" * 100000
+expected = 1

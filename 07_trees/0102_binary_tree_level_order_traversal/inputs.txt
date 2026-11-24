@@ -1,0 +1,51 @@
+# Test cases for Binary Tree Level Order Traversal — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Trees are written in LeetCode's level order: [1,2,3,null,4] (null = no child in that spot).
+# Values are JSON (true, false, null, "text") or Python expressions like [1] + [null, 1] * 1999.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+root = [3,9,20,null,null,15,7]
+expected = [[3],[9,20],[15,7]]
+
+# Example 2
+root = [1]
+expected = [[1]]
+
+# Example 3
+root = []
+expected = []
+
+# chain going left
+root = [1,2,null,3,null,4]
+expected = [[1],[2],[3],[4]]
+
+# chain going right
+root = [1,null,2,null,3]
+expected = [[1],[2],[3]]
+
+# full tree with three levels
+root = [1,2,3,4,5,6,7]
+expected = [[1],[2,3],[4,5,6,7]]
+
+# one level made of nodes from both subtrees, with gaps
+root = [1,2,3,null,4,5]
+expected = [[1],[2,3],[4,5]]
+
+# left side deeper than the right
+root = [1,2,3,4,null,null,null,5]
+expected = [[1],[2,3],[4],[5]]
+
+# negative and repeated values
+root = [0,-1000,1000,-1000,null,null,1000]
+expected = [[0],[-1000,1000],[-1000,1000]]
+
+# max size: complete tree of 2000 nodes, values -1000..999 in level order
+root = [v - 1000 for v in range(2000)]
+expected = [[v - 1000 for v in range(2 ** d - 1, min(2 ** (d + 1) - 1, 2000))] for d in range(11)]
+
+# max size: chain of 2000 nodes going right
+root = [1] + [null, 1] * 1999
+expected = [[1]] * 2000

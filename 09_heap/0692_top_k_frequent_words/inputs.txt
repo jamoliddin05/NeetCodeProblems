@@ -1,0 +1,61 @@
+# Test cases for Top K Frequent Words — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like ["a"] * 500.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+words = ["i","love","leetcode","i","love","coding"]
+k = 2
+expected = ["i","love"]
+
+# Example 2
+words = ["the","day","is","sunny","the","the","the","sunny","is","is"]
+k = 4
+expected = ["the","is","sunny","day"]
+
+# single word
+words = ["a"]
+k = 1
+expected = ["a"]
+
+# all words once: alphabetical order decides
+words = ["b", "c", "a"]
+k = 2
+expected = ["a", "b"]
+
+# frequency comes before alphabetical order
+words = ["z", "z", "a"]
+k = 2
+expected = ["z", "a"]
+
+# tie: alphabetical order, not the order seen
+words = ["the", "a", "the", "a"]
+k = 1
+expected = ["a"]
+
+# a word that is a prefix of another comes first
+words = ["abc", "ab", "abc", "ab"]
+k = 2
+expected = ["ab", "abc"]
+
+# tie at the cut: the alphabetically later word drops out
+words = ["c", "b", "a", "c", "b", "a", "d"]
+k = 2
+expected = ["a", "b"]
+
+# k = number of unique words
+words = ["x", "y", "y", "z", "z", "z"]
+k = 3
+expected = ["z", "y", "x"]
+
+# max length: 500 words, 25 letters tied at 20 each
+words = [chr(ord("a") + i % 25) for i in range(500)]
+k = 3
+expected = ["a", "b", "c"]
+
+# max length: 500 words, longest word length 10
+words = ["abcdefghij"] * 200 + ["abcdefghi"] * 200 + ["zzzzzzzzzz"] * 100
+k = 3
+expected = ["abcdefghi", "abcdefghij", "zzzzzzzzzz"]

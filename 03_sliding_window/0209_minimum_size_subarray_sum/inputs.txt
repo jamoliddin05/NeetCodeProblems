@@ -1,0 +1,61 @@
+# Test cases for Minimum Size Subarray Sum — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [1] * 100000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+target = 7
+nums = [2, 3, 1, 2, 4, 3]
+expected = 2
+
+# Example 2
+target = 4
+nums = [1, 4, 4]
+expected = 1
+
+# Example 3
+target = 11
+nums = [1, 1, 1, 1, 1, 1, 1, 1]
+expected = 0
+
+# single element that reaches the target exactly
+target = 5
+nums = [5]
+expected = 1
+
+# single element too small
+target = 6
+nums = [5]
+expected = 0
+
+# the whole array is needed
+target = 15
+nums = [1, 2, 3, 4, 5]
+expected = 5
+
+# one large element in the middle is enough
+target = 100
+nums = [1, 1, 100, 1]
+expected = 1
+
+# best block is at the end, shorter than the first block that works
+target = 11
+nums = [1, 2, 3, 4, 5]
+expected = 3
+
+# largest target, sum of all elements is far below it
+target = 1000000000
+nums = [10000] * 10
+expected = 0
+
+# stress: 10^5 elements of 10^4, target 10^9 needs every one of them
+target = 1000000000
+nums = [10000] * 100000
+expected = 100000
+
+# stress: 10^5 ones, target 50000
+target = 50000
+nums = [1] * 100000
+expected = 50000

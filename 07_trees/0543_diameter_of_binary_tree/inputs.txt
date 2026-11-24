@@ -1,0 +1,39 @@
+# Test cases for Diameter of Binary Tree — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Trees are written in LeetCode's level order: [1,2,3,null,4] (null = no child in that spot).
+# Values are JSON (true, false, null, "text") or Python expressions like [1] + [1, null] * 9999.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+root = [1,2,3,4,5]
+expected = 3
+
+# Example 2
+root = [1,2]
+expected = 1
+
+# single node: no edges
+root = [1]
+expected = 0
+
+# longest path does not pass through the root
+root = [1,2,null,3,4,5,null,null,6,7,null,null,8]
+expected = 6
+
+# path through the root, one side deeper
+root = [1,2,3,4,null,null,null,5]
+expected = 4
+
+# all values equal and negative
+root = [-100,-100,-100,-100,null,null,-100]
+expected = 4
+
+# max size: chain of 10^4 nodes going left
+root = [1] + [1, null] * 9999
+expected = 9999
+
+# max size: root with two arms of 4999 nodes each
+root = [0, 0, 0] + [0, null, null, 0] * 4998
+expected = 9998

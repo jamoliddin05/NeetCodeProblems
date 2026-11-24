@@ -1,0 +1,61 @@
+# Test cases for Replace Words — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like " ".join(["a" * 999] * 1000).
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+dictionary = ["cat","bat","rat"]
+sentence = "the cattle was rattled by the battery"
+expected = "the cat was rat by the bat"
+
+# Example 2
+dictionary = ["a","b","c"]
+sentence = "aadsfasf absbs bbab cadsfafs"
+expected = "a a b c"
+
+# several roots fit: the shortest wins even when it is listed last
+dictionary = ["catt","cat","ca"]
+sentence = "cattle cat ca c"
+expected = "ca ca ca c"
+
+# no word starts with a root
+dictionary = ["xyz"]
+sentence = "hello world"
+expected = "hello world"
+
+# root equal to the whole word
+dictionary = ["the"]
+sentence = "the then there"
+expected = "the the the"
+
+# root inside a word but not at its start
+dictionary = ["at"]
+sentence = "cat bat attack"
+expected = "cat bat at"
+
+# root longer than the word
+dictionary = ["apple"]
+sentence = "app apple applesauce"
+expected = "app apple apple"
+
+# single one-letter word
+dictionary = ["a"]
+sentence = "a"
+expected = "a"
+
+# the same word repeated
+dictionary = ["re"]
+sentence = "redo redo redo"
+expected = "re re re"
+
+# max size: 100 roots "a" ... "a" * 100 (longest first), 1000 words of 999 letters
+dictionary = ["a" * k for k in range(100, 0, -1)]
+sentence = " ".join(["a" * 999] * 1000)
+expected = " ".join(["a"] * 1000)
+
+# max size: 1000 roots without the letter a, nothing changes
+dictionary = [chr(98 + i % 25) * (i // 25 + 1) for i in range(1000)]
+sentence = " ".join(["a" * 999] * 1000)
+expected = " ".join(["a" * 999] * 1000)

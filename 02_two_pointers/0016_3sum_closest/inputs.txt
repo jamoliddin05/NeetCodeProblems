@@ -1,0 +1,66 @@
+# Test cases for 3Sum Closest — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(500)).
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+nums = [-1, 2, 1, -4]
+target = 1
+expected = 2
+
+# Example 2
+nums = [0, 0, 0]
+target = 1
+expected = 0
+
+# exactly three numbers: their sum is the answer
+nums = [-1, 5, 7]
+target = 0
+expected = 11
+
+# an exact match exists
+nums = [1, 2, 3, 4]
+target = 6
+expected = 6
+
+# target above every sum: the three largest
+nums = [1, 2, 3, 4]
+target = 100
+expected = 9
+
+# target below every sum: the three smallest
+nums = [-5, -4, -3, -2]
+target = -100
+expected = -12
+
+# each index once: 1 + 1 + 1 is not allowed
+nums = [1, 50, 60, 70]
+target = 3
+expected = 111
+
+# closest sum is above the target
+nums = [9, 0, 5, 2]
+target = 6
+expected = 7
+
+# closest sum is below the target
+nums = [9, 0, 5, 2]
+target = 12
+expected = 11
+
+# unsorted input with duplicates
+nums = [1, 1, -1, -1, 3]
+target = -1
+expected = -1
+
+# values at the constraint extremes
+nums = [-1000, -1000, -1000, 1000, 1000, 1000]
+target = 10000
+expected = 3000
+
+# stress: 500 numbers, target above every sum: 497 + 498 + 499
+nums = list(range(500))
+target = 10000
+expected = 1494

@@ -1,0 +1,56 @@
+# Test cases for Word Break — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like "a" * 299 + "b".
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+s = "leetcode"
+wordDict = ["leet", "code"]
+expected = true
+
+# Example 2
+s = "applepenapple"
+wordDict = ["apple", "pen"]
+expected = true
+
+# Example 3
+s = "catsandog"
+wordDict = ["cats", "dog", "sand", "and", "cat"]
+expected = false
+
+# single letter that is a word
+s = "a"
+wordDict = ["a"]
+expected = true
+
+# no word appears in s
+s = "a"
+wordDict = ["b"]
+expected = false
+
+# a word longer than s, the other word covers only the end
+s = "ab"
+wordDict = ["abc", "b"]
+expected = false
+
+# taking the first matching word in list order fails
+s = "cars"
+wordDict = ["car", "ca", "rs"]
+expected = true
+
+# taking the longest matching word first fails
+s = "goalspecial"
+wordDict = ["go", "goal", "goals", "special"]
+expected = true
+
+# odd length, only even-length words
+s = "aaaaaaa"
+wordDict = ["aaaa", "aa"]
+expected = false
+
+# 299 a's and a b at the end: plain recursion is too slow
+s = "a" * 299 + "b"
+wordDict = ["a" * k for k in range(1, 21)]
+expected = false

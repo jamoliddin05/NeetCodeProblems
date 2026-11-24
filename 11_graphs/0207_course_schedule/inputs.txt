@@ -1,0 +1,62 @@
+# Test cases for Course Schedule — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [[i + 1, i] for i in range(1999)].
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+numCourses = 2
+prerequisites = [[1,0]]
+expected = true
+
+# Example 2
+numCourses = 2
+prerequisites = [[1,0],[0,1]]
+expected = false
+
+# one course, no prerequisites
+numCourses = 1
+prerequisites = []
+expected = true
+
+# several courses, no prerequisites
+numCourses = 5
+prerequisites = []
+expected = true
+
+# chain 0 -> 1 -> 2 -> 3
+numCourses = 4
+prerequisites = [[1,0],[2,1],[3,2]]
+expected = true
+
+# chain whose last course leads back to the first
+numCourses = 4
+prerequisites = [[1,0],[2,1],[3,2],[0,3]]
+expected = false
+
+# two paths to the same course are not a cycle
+numCourses = 4
+prerequisites = [[1,0],[2,0],[3,1],[3,2]]
+expected = true
+
+# cycle among courses that course 0 does not lead to
+numCourses = 5
+prerequisites = [[1,0],[3,2],[4,3],[2,4]]
+expected = false
+
+# higher-numbered courses must come first
+numCourses = 3
+prerequisites = [[0,1],[1,2]]
+expected = true
+
+# max size: 2000 courses, 5000 pairs, no cycle
+# Every pair says a course needs a lower-numbered course.
+numCourses = 2000
+prerequisites = [[i + 1, i] for i in range(1999)] + [[i + 2, i] for i in range(1998)] + [[i + 3, i] for i in range(1003)]
+expected = true
+
+# max size: one pair closes a cycle through all courses
+numCourses = 2000
+prerequisites = [[i + 1, i] for i in range(1999)] + [[i + 2, i] for i in range(1998)] + [[i + 3, i] for i in range(1002)] + [[0, 1999]]
+expected = false

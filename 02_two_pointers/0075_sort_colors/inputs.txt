@@ -1,0 +1,47 @@
+# Test cases for Sort Colors — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [2] * 100 + [0] * 100.
+# Leave `expected` out to just see what your solution returns.
+# `expected` is what `nums` must hold after the call: the method changes it in place.
+
+# Example 1
+nums = [2, 0, 2, 1, 1, 0]
+expected = [0, 0, 1, 1, 2, 2]
+
+# Example 2
+nums = [2, 0, 1]
+expected = [0, 1, 2]
+
+# single element
+nums = [1]
+expected = [1]
+
+# already sorted
+nums = [0, 0, 1, 1, 2, 2]
+expected = [0, 0, 1, 1, 2, 2]
+
+# reverse sorted
+nums = [2, 2, 1, 1, 0, 0]
+expected = [0, 0, 1, 1, 2, 2]
+
+# one color only
+nums = [2, 2, 2]
+expected = [2, 2, 2]
+
+# no 1s
+nums = [2, 0, 2, 0]
+expected = [0, 0, 2, 2]
+
+# no 0s
+nums = [2, 1, 2, 1]
+expected = [1, 1, 2, 2]
+
+# the value swapped in from the right must be looked at again
+nums = [1, 2, 0]
+expected = [0, 1, 2]
+
+# max length: 300 values in reverse order
+nums = [2] * 100 + [1] * 100 + [0] * 100
+expected = [0] * 100 + [1] * 100 + [2] * 100

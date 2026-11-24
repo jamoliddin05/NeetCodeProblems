@@ -1,0 +1,51 @@
+# Test cases for Find Peak Element — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Any peak index passes: `expected` shows one of them, and tests.py checks that yours is a peak.
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(1000)).
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+nums = [1,2,3,1]
+expected = 2
+
+# Example 2: index 1 or 5
+nums = [1,2,1,3,5,6,4]
+expected = 5
+
+# single element
+nums = [7]
+expected = 0
+
+# single element at the 32-bit minimum
+nums = [-2147483648]
+expected = 0
+
+# two elements, rising
+nums = [1, 2]
+expected = 1
+
+# two elements, falling
+nums = [2, 1]
+expected = 0
+
+# strictly increasing: the peak is the last element
+nums = [1, 2, 3, 4, 5, 6]
+expected = 5
+
+# strictly decreasing: the peak is the first element
+nums = [6, 5, 4, 3, 2, 1]
+expected = 0
+
+# zigzag: peaks at index 1, 3 and 5
+nums = [1, 3, 2, 4, 3, 5, 4]
+expected = 1
+
+# valley in the middle: peaks at both ends
+nums = [3, 2, 1, 2, 3]
+expected = 0
+
+# max size: rises all the way to the end
+nums = list(range(1000))
+expected = 999

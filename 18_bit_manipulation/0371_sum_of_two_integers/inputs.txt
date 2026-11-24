@@ -1,0 +1,66 @@
+# Test cases for Sum of Two Integers — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like 2 ** 9 - 1.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+a = 1
+b = 2
+expected = 3
+
+# Example 2
+a = 2
+b = 3
+expected = 5
+
+# both zero
+a = 0
+b = 0
+expected = 0
+
+# zero and a negative
+a = 0
+b = -5
+expected = -5
+
+# negative plus positive gives zero
+a = -1
+b = 1
+expected = 0
+
+# negative plus smaller positive: negative result
+a = -12
+b = 5
+expected = -7
+
+# positive plus negative: positive result
+a = 20
+b = -7
+expected = 13
+
+# both negative
+a = -1
+b = -1
+expected = -2
+
+# carry runs through many bits
+a = 511
+b = 1
+expected = 512
+
+# value limits: both largest
+a = 1000
+b = 1000
+expected = 2000
+
+# value limits: both smallest
+a = -1000
+b = -1000
+expected = -2000
+
+# value limits: opposite signs
+a = 1000
+b = -1000
+expected = 0

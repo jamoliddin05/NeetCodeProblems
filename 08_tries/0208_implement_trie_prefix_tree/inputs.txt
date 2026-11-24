@@ -1,0 +1,93 @@
+# Test cases for Implement Trie (Prefix Tree) — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each line is one call on the same object; the first line creates it.
+# `-> value` after a call is the value it must return; calls without `->` aren't checked.
+# Values are JSON (true, false, null, "text") or Python expressions like "a" * 2000.
+
+# Example 1
+Trie()
+insert("apple")
+search("apple") -> true
+search("app") -> false
+startsWith("app") -> true
+insert("app")
+search("app") -> true
+
+# empty trie finds nothing
+Trie()
+search("a") -> false
+startsWith("a") -> false
+
+# a whole word is also a prefix of itself
+Trie()
+insert("abc")
+startsWith("abc") -> true
+search("abc") -> true
+
+# query longer than every stored word
+Trie()
+insert("apple")
+search("apples") -> false
+startsWith("apples") -> false
+startsWith("applf") -> false
+
+# words that share a prefix and then branch
+Trie()
+insert("car")
+insert("cat")
+insert("cart")
+search("ca") -> false
+search("car") -> true
+search("cat") -> true
+search("cart") -> true
+search("carts") -> false
+startsWith("cat") -> true
+startsWith("cb") -> false
+
+# longer word inserted first, then its prefix
+Trie()
+insert("apple")
+insert("app")
+search("apple") -> true
+search("app") -> true
+search("appl") -> false
+
+# same word inserted twice
+Trie()
+insert("hello")
+insert("hello")
+search("hello") -> true
+search("hell") -> false
+
+# one-letter words
+Trie()
+insert("a")
+search("a") -> true
+startsWith("a") -> true
+search("b") -> false
+startsWith("b") -> false
+
+# prefix asked before and after the word is inserted
+Trie()
+startsWith("pre") -> false
+insert("prefix")
+startsWith("pre") -> true
+search("pre") -> false
+
+# words with no letters in common
+Trie()
+insert("dog")
+insert("cat")
+search("dog") -> true
+search("cat") -> true
+search("cog") -> false
+startsWith("d") -> true
+
+# max length: a word of 2000 letters
+Trie()
+insert("a" * 2000)
+search("a" * 2000) -> true
+search("a" * 1999) -> false
+startsWith("a" * 1999) -> true
+startsWith("a" * 1999 + "b") -> false

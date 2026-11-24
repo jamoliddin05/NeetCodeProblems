@@ -1,0 +1,52 @@
+# Test cases for Construct Binary Tree from Preorder and Inorder Traversal — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# The returned tree is compared in LeetCode's level order: [1,2,3,null,4] (null = no child in that spot).
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(3000)).
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+preorder = [3,9,20,15,7]
+inorder = [9,3,15,20,7]
+expected = [3,9,20,null,null,15,7]
+
+# Example 2
+preorder = [-1]
+inorder = [-1]
+expected = [-1]
+
+# root with only a left child
+preorder = [1,2]
+inorder = [2,1]
+expected = [1,2]
+
+# root with only a right child
+preorder = [1,2]
+inorder = [1,2]
+expected = [1,null,2]
+
+# full tree with three levels
+preorder = [1,2,4,5,3,6,7]
+inorder = [4,2,5,1,6,3,7]
+expected = [1,2,3,4,5,6,7]
+
+# zigzag: left, then right, then left
+preorder = [1,2,3,4]
+inorder = [2,4,3,1]
+expected = [1,2,null,null,3,4]
+
+# values at the limits, not sorted like a search tree
+preorder = [0,-3000,7,5,3000]
+inorder = [7,-3000,0,5,3000]
+expected = [0,-3000,5,7,null,null,3000]
+
+# max size: chain of 3000 nodes going right (preorder equals inorder)
+preorder = list(range(3000))
+inorder = list(range(3000))
+expected = [0] + [x for v in range(1, 3000) for x in (null, v)]
+
+# max size: chain of 3000 nodes going left (inorder is preorder reversed)
+preorder = list(range(3000))
+inorder = list(range(2999, -1, -1))
+expected = [0, 1] + [x for v in range(2, 3000) for x in (null, v)]

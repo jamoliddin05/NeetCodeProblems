@@ -1,0 +1,61 @@
+# Test cases for Max Consecutive Ones III — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [1, 0] * 50000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+nums = [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0]
+k = 2
+expected = 6
+
+# Example 2
+nums = [0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1]
+k = 3
+expected = 10
+
+# single zero, no changes allowed
+nums = [0]
+k = 0
+expected = 0
+
+# single zero, one change
+nums = [0]
+k = 1
+expected = 1
+
+# k = 0: only the longest run already in nums
+nums = [1, 1, 0, 1, 1, 1, 0, 1]
+k = 0
+expected = 3
+
+# all zeros: the answer is k
+nums = [0, 0, 0, 0]
+k = 2
+expected = 2
+
+# k equals the number of zeros: the whole array
+nums = [0, 1, 0, 1]
+k = 2
+expected = 4
+
+# k larger than the number of zeros
+nums = [0, 0, 1]
+k = 3
+expected = 3
+
+# best change joins the longest run with a short one
+nums = [1, 1, 0, 0, 1, 1, 1, 0, 1]
+k = 1
+expected = 5
+
+# stress: 50000 zeros then 50000 ones, k = 1
+nums = [0] * 50000 + [1] * 50000
+k = 1
+expected = 50001
+
+# stress: 10^5 ones, k = 0
+nums = [1] * 100000
+k = 0
+expected = 100000

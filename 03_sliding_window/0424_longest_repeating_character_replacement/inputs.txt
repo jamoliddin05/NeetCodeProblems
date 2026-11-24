@@ -1,0 +1,66 @@
+# Test cases for Longest Repeating Character Replacement — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like "AB" * 50000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+s = "ABAB"
+k = 2
+expected = 4
+
+# Example 2
+s = "AABABBA"
+k = 1
+expected = 4
+
+# single letter, no replacements
+s = "A"
+k = 0
+expected = 1
+
+# k = 0: only the longest run already in s
+s = "AABBBCC"
+k = 0
+expected = 3
+
+# all letters equal: the answer can't exceed the length
+s = "AAAA"
+k = 2
+expected = 4
+
+# k equals the length: the whole string
+s = "ABCD"
+k = 4
+expected = 4
+
+# all letters different, one replacement
+s = "ABCDE"
+k = 1
+expected = 2
+
+# k too small to join the two A runs
+s = "AAABBBAAA"
+k = 2
+expected = 5
+
+# k just enough to join the two A runs
+s = "AAABBBAAA"
+k = 3
+expected = 9
+
+# one replacement in the middle joins two B runs
+s = "ABBBCBBA"
+k = 1
+expected = 6
+
+# stress: 10^5 letters, k covers every B
+s = "AB" * 50000
+k = 50000
+expected = 100000
+
+# stress: 50000 A then 50000 B, k = 1000: one run plus 1000 changed letters
+s = "A" * 50000 + "B" * 50000
+k = 1000
+expected = 51000

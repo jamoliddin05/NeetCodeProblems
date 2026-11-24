@@ -1,0 +1,62 @@
+# Test cases for Course Schedule II — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [[i + 1, i] for i in range(1999)].
+# Leave `expected` out to just see what your solution returns.
+# Any valid order is accepted, not only the one written in `expected`; expected = [] means no order exists.
+
+# Example 1
+numCourses = 2
+prerequisites = [[1,0]]
+expected = [0,1]
+
+# Example 2
+numCourses = 4
+prerequisites = [[1,0],[2,0],[3,1],[3,2]]
+expected = [0,2,1,3]
+
+# Example 3
+numCourses = 1
+prerequisites = []
+expected = [0]
+
+# two courses that need each other
+numCourses = 2
+prerequisites = [[1,0],[0,1]]
+expected = []
+
+# no prerequisites: every course is still in the order
+numCourses = 3
+prerequisites = []
+expected = [0,1,2]
+
+# chain numbered backwards
+numCourses = 4
+prerequisites = [[0,1],[1,2],[2,3]]
+expected = [3,2,1,0]
+
+# cycle among courses that course 0 does not lead to
+numCourses = 5
+prerequisites = [[1,0],[3,2],[4,3],[2,4]]
+expected = []
+
+# one course with three prerequisites, plus a separate pair
+numCourses = 6
+prerequisites = [[5,0],[5,1],[5,2],[3,4]]
+expected = [0,1,2,4,3,5]
+
+# valid start, then a cycle
+numCourses = 4
+prerequisites = [[1,0],[2,1],[3,2],[1,3]]
+expected = []
+
+# max courses: 2000 courses, 5994 pairs, one valid order
+numCourses = 2000
+prerequisites = [[i + 1, i] for i in range(1999)] + [[i + 2, i] for i in range(1998)] + [[i + 3, i] for i in range(1997)]
+expected = list(range(2000))
+
+# max courses: one pair closes a cycle through all courses
+numCourses = 2000
+prerequisites = [[i + 1, i] for i in range(1999)] + [[i + 2, i] for i in range(1998)] + [[i + 3, i] for i in range(1997)] + [[0, 1999]]
+expected = []

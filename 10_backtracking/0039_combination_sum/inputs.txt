@@ -1,0 +1,52 @@
+# Test cases for Combination Sum — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(11, 41)).
+# Leave `expected` out to just see what your solution returns.
+# The combinations, and the numbers inside each combination, may come back in any order.
+
+# Example 1
+candidates = [2,3,6,7]
+target = 7
+expected = [[2,2,3],[7]]
+
+# Example 2
+candidates = [2,3,5]
+target = 8
+expected = [[2,2,2,2],[2,3,3],[3,5]]
+
+# Example 3
+candidates = [2]
+target = 1
+expected = []
+
+# one candidate used 20 times
+candidates = [2]
+target = 40
+expected = [[2] * 20]
+
+# target is a candidate and also a sum of smaller ones
+candidates = [3, 6]
+target = 6
+expected = [[3, 3], [6]]
+
+# candidates below the target, but no sum reaches it
+candidates = [4, 6]
+target = 9
+expected = []
+
+# unsorted candidates
+candidates = [8, 2, 5, 3]
+target = 10
+expected = [[2, 8], [5, 5], [2, 3, 5], [2, 2, 3, 3], [2, 2, 2, 2, 2]]
+
+# a candidate bigger than the target
+candidates = [40, 2]
+target = 4
+expected = [[2, 2]]
+
+# max length: 30 candidates (11..40), target 40
+candidates = list(range(11, 41))
+target = 40
+expected = [[40], [11, 29], [12, 28], [13, 27], [14, 26], [15, 25], [16, 24], [17, 23], [18, 22], [19, 21], [20, 20], [11, 11, 18], [11, 12, 17], [11, 13, 16], [11, 14, 15], [12, 12, 16], [12, 13, 15], [12, 14, 14], [13, 13, 14]]

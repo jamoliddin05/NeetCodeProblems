@@ -1,0 +1,61 @@
+# Test cases for Task Scheduler — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like ["A"] * 10000.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+tasks = ["A","A","A","B","B","B"]
+n = 2
+expected = 8
+
+# Example 2
+tasks = ["A","C","A","B","D","B"]
+n = 1
+expected = 6
+
+# Example 3
+tasks = ["A","A","A", "B","B","B"]
+n = 3
+expected = 10
+
+# n = 0: no waiting at all
+tasks = ["A","A","A","B","B","B"]
+n = 0
+expected = 6
+
+# single task, long cooldown
+tasks = ["A"]
+n = 100
+expected = 1
+
+# one label only: idle after every task but the last
+tasks = ["A","A","A"]
+n = 2
+expected = 7
+
+# enough other labels to fill every gap: no idle
+tasks = ["A","A","A","B","C","D","E","F","G"]
+n = 2
+expected = 9
+
+# several labels tied for the most frequent
+tasks = ["A","A","B","B","C","C","D"]
+n = 4
+expected = 8
+
+# 26 different labels, max cooldown
+tasks = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+n = 100
+expected = 26
+
+# 26 labels, 384 of each, n = 25: gaps fit exactly
+tasks = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") * 384
+n = 25
+expected = 9984
+
+# stress: 10^4 copies of one label, n = 100
+tasks = ["A"] * 10000
+n = 100
+expected = 10000 + 9999 * 100

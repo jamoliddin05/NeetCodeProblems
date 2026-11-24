@@ -1,0 +1,50 @@
+# Test cases for Spiral Matrix — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [[1] * 10 for _ in range(10)].
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+matrix = [[1,2,3],[4,5,6],[7,8,9]]
+expected = [1,2,3,6,9,8,7,4,5]
+
+# Example 2
+matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+expected = [1,2,3,4,8,12,11,10,9,5,6,7]
+
+# 1 x 1
+matrix = [[7]]
+expected = [7]
+
+# single row
+matrix = [[1,2,3,4]]
+expected = [1,2,3,4]
+
+# single column
+matrix = [[1],[2],[3],[4]]
+expected = [1,2,3,4]
+
+# 2 x 2
+matrix = [[1,2],[3,4]]
+expected = [1,2,4,3]
+
+# wide 2 x 4: no inner part
+matrix = [[1,2,3,4],[5,6,7,8]]
+expected = [1,2,3,4,8,7,6,5]
+
+# wide 3 x 5: one row left in the middle
+matrix = [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15]]
+expected = [1,2,3,4,5,10,15,14,13,12,11,6,7,8,9]
+
+# tall 5 x 3: one column left in the middle
+matrix = [[1,2,3],[4,5,6],[7,8,9],[10,11,12],[13,14,15]]
+expected = [1,2,3,6,9,12,15,14,13,10,7,4,5,8,11]
+
+# negatives and repeated values
+matrix = [[-100,100],[0,-100],[100,0]]
+expected = [-100,100,-100,0,100,0]
+
+# largest size: 10 x 10
+matrix = [[i * 10 + j - 50 for j in range(10)] for i in range(10)]
+expected = [-50,-49,-48,-47,-46,-45,-44,-43,-42,-41,-31,-21,-11,-1,9,19,29,39,49,48,47,46,45,44,43,42,41,40,30,20,10,0,-10,-20,-30,-40,-39,-38,-37,-36,-35,-34,-33,-32,-22,-12,-2,8,18,28,38,37,36,35,34,33,32,31,21,11,1,-9,-19,-29,-28,-27,-26,-25,-24,-23,-13,-3,7,17,27,26,25,24,23,22,12,2,-8,-18,-17,-16,-15,-14,-4,6,16,15,14,13,3,-7,-6,-5,5,4]

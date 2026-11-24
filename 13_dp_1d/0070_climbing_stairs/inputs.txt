@@ -1,0 +1,34 @@
+# Test cases for Climbing Stairs — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like 9 * 5.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+n = 2
+expected = 2
+
+# Example 2
+n = 3
+expected = 3
+
+# smallest n: only one way
+n = 1
+expected = 1
+
+# n = 4: first n whose answer is not n
+n = 4
+expected = 5
+
+# n = 10: a longer staircase
+n = 10
+expected = 89
+
+# n = 30: answer above one million
+n = 30
+expected = 1346269
+
+# largest n: plain recursion without saved results is too slow
+n = 45
+expected = 1836311903

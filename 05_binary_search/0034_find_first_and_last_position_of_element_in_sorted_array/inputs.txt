@@ -1,0 +1,66 @@
+# Test cases for Find First and Last Position of Element in Sorted Array — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [0] * 10**5.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+nums = [5,7,7,8,8,10]
+target = 8
+expected = [3,4]
+
+# Example 2
+nums = [5,7,7,8,8,10]
+target = 6
+expected = [-1,-1]
+
+# Example 3: empty array
+nums = []
+target = 0
+expected = [-1,-1]
+
+# single element equal to target
+nums = [1]
+target = 1
+expected = [0, 0]
+
+# target appears once
+nums = [1, 2, 3, 4, 5]
+target = 3
+expected = [2, 2]
+
+# every element is the target
+nums = [2, 2, 2, 2, 2]
+target = 2
+expected = [0, 4]
+
+# run of the target at the start
+nums = [3, 3, 3, 4, 5]
+target = 3
+expected = [0, 2]
+
+# run of the target at the end
+nums = [1, 2, 9, 9]
+target = 9
+expected = [2, 3]
+
+# target smaller than every element
+nums = [2, 2, 3]
+target = 1
+expected = [-1, -1]
+
+# target larger than every element
+nums = [1, 2, 3]
+target = 4
+expected = [-1, -1]
+
+# values at -10^9 and 10^9
+nums = [-1000000000, -1000000000, 1000000000]
+target = -1000000000
+expected = [0, 1]
+
+# max size: target fills the second half
+nums = [0] * 50000 + [1] * 50000
+target = 1
+expected = [50000, 99999]

@@ -1,0 +1,94 @@
+# Test cases for Design Add and Search Words Data Structure — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each line is one call on the same object; the first line creates it.
+# `-> value` after a call is the value it must return; calls without `->` aren't checked.
+# Values are JSON (true, false, null, "text") or Python expressions like "a" * 25.
+
+# Example 1
+WordDictionary()
+addWord("bad")
+addWord("dad")
+addWord("mad")
+search("pad") -> false
+search("bad") -> true
+search(".ad") -> true
+search("b..") -> true
+
+# empty dictionary finds nothing
+WordDictionary()
+search("a") -> false
+search(".") -> false
+
+# a dot stands for exactly one letter
+WordDictionary()
+addWord("a")
+search(".") -> true
+search("..") -> false
+search("a.") -> false
+search(".a") -> false
+
+# the length must match exactly
+WordDictionary()
+addWord("abc")
+search("ab") -> false
+search("abcd") -> false
+search("...") -> true
+search("..") -> false
+search("a.c") -> true
+
+# a prefix of an added word is not a match
+WordDictionary()
+addWord("apple")
+search("app") -> false
+search("app.e") -> true
+search("appl.") -> true
+search("apple") -> true
+
+# the first letter tried for a dot leads nowhere, a later one matches
+WordDictionary()
+addWord("xa")
+addWord("yb")
+search(".b") -> true
+search(".a") -> true
+search(".c") -> false
+
+# two dots at different places
+WordDictionary()
+addWord("hello")
+search("h.l.o") -> true
+search(".ell.") -> true
+search("he..o") -> true
+search("h.l.p") -> false
+
+# search before and after the word is added
+WordDictionary()
+search("bad") -> false
+addWord("bad")
+search("bad") -> true
+search("b.d") -> true
+search("b..d") -> false
+
+# a dot path that passes a longer word but no word of that length
+WordDictionary()
+addWord("ab")
+addWord("abcd")
+search("ab..") -> true
+search("ab.") -> false
+search("a.") -> true
+
+# only dots
+WordDictionary()
+addWord("ab")
+addWord("cd")
+search("..") -> true
+search(".") -> false
+search("...") -> false
+
+# max length: a word of 25 letters
+WordDictionary()
+addWord("a" * 25)
+search("a" * 25) -> true
+search("a" * 24) -> false
+search("." + "a" * 23 + ".") -> true
+search("a" * 23 + "b.") -> false

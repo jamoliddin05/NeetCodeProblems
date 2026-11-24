@@ -1,0 +1,56 @@
+# Test cases for Koko Eating Bananas — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [10**9] * 10**4.
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+piles = [3,6,7,11]
+h = 8
+expected = 4
+
+# Example 2: one hour per pile
+piles = [30,11,23,4,20]
+h = 5
+expected = 30
+
+# Example 3
+piles = [30,11,23,4,20]
+h = 6
+expected = 23
+
+# one pile of 10^9, one hour
+piles = [1000000000]
+h = 1
+expected = 1000000000
+
+# one pile, hours don't divide it evenly
+piles = [10]
+h = 3
+expected = 4
+
+# speed divides every pile evenly
+piles = [4, 4, 4]
+h = 6
+expected = 2
+
+# plenty of time: the answer is 1, not 0
+piles = [3, 6, 7, 11]
+h = 1000000000
+expected = 1
+
+# one hour less than speed 1 needs
+piles = [3, 6, 7, 11]
+h = 26
+expected = 2
+
+# stress: 9999 small piles take an hour each, leaving 2 hours for the 10^9 pile
+piles = [10**9] + [1] * 9999
+h = 10**4 + 1
+expected = 500000000
+
+# stress: 10^4 piles of 10^9 and h = 10^9, so 10^5 hours per pile
+piles = [10**9] * 10**4
+h = 10**9
+expected = 10000

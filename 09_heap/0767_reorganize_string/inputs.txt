@@ -1,0 +1,55 @@
+# Test cases for Reorganize String — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like "a" * 250.
+# Leave `expected` out to just see what your solution returns.
+# Any valid arrangement passes: `expected` shows one of them, or "" when none exists.
+
+# Example 1
+s = "aab"
+expected = "aba"
+
+# Example 2
+s = "aaab"
+expected = ""
+
+# single character
+s = "a"
+expected = "a"
+
+# two equal characters: impossible
+s = "aa"
+expected = ""
+
+# two different characters
+s = "ab"
+expected = "ab"
+
+# most frequent letter exactly at the limit, odd length
+s = "aaabb"
+expected = "ababa"
+
+# most frequent letter at the limit, even length
+s = "aabb"
+expected = "abab"
+
+# one over the limit, even length
+s = "aaaabc"
+expected = ""
+
+# taking the letters in alphabetical order fails
+s = "vvvlo"
+expected = "vlvov"
+
+# all letters different
+s = "abcdef"
+expected = "abcdef"
+
+# max length: 250 + 250, possible
+s = "a" * 250 + "b" * 250
+expected = "ab" * 250
+
+# max length: 251 + 249, impossible
+s = "a" * 251 + "b" * 249
+expected = ""

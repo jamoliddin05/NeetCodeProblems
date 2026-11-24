@@ -1,0 +1,51 @@
+# Test cases for Binary Tree Right Side View — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Trees are written in LeetCode's level order: [1,2,3,null,4] (null = no child in that spot).
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(100)).
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+root = [1,2,3,null,5,null,4]
+expected = [1,3,4]
+
+# Example 2
+root = [1,2,3,4,null,null,null,5]
+expected = [1,3,4,5]
+
+# Example 3
+root = [1,null,3]
+expected = [1,3]
+
+# Example 4
+root = []
+expected = []
+
+# single node
+root = [7]
+expected = [7]
+
+# chain going left: every visible node is a left child
+root = [1,2,null,3]
+expected = [1,2,3]
+
+# right subtree is shorter: its bottom node is a left child
+root = [1,2,3,null,null,4]
+expected = [1,3,4]
+
+# zigzag: the visible node switches sides on every level
+root = [1,2,null,null,3,4,null,null,5]
+expected = [1,2,3,4,5]
+
+# full tree with three levels
+root = [1,2,3,4,5,6,7]
+expected = [1,3,7]
+
+# negative and repeated values
+root = [-100,-100,100,null,-100]
+expected = [-100,100,-100]
+
+# max size: chain of 100 nodes going left, values 0..99
+root = [0] + [x for v in range(1, 100) for x in (v, null)]
+expected = list(range(100))

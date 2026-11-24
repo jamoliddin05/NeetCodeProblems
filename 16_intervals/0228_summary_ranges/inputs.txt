@@ -1,0 +1,46 @@
+# Test cases for Summary Ranges — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like list(range(20)).
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+nums = [0, 1, 2, 4, 5, 7]
+expected = ["0->2", "4->5", "7"]
+
+# Example 2
+nums = [0, 2, 3, 4, 6, 8, 9]
+expected = ["0", "2->4", "6", "8->9"]
+
+# empty array
+nums = []
+expected = []
+
+# single number
+nums = [5]
+expected = ["5"]
+
+# single negative number
+nums = [-1]
+expected = ["-1"]
+
+# all numbers in one range
+nums = [1, 2, 3, 4]
+expected = ["1->4"]
+
+# no two numbers are next to each other
+nums = [1, 3, 5]
+expected = ["1", "3", "5"]
+
+# a range that crosses zero
+nums = [-3, -2, -1, 0, 2]
+expected = ["-3->0", "2"]
+
+# 32-bit extremes
+nums = [-2147483648, -2147483647, 2147483647]
+expected = ["-2147483648->-2147483647", "2147483647"]
+
+# max length: 20 numbers in one range
+nums = list(range(-10, 10))
+expected = ["-10->9"]

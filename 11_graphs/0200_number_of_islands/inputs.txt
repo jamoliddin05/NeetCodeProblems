@@ -1,0 +1,54 @@
+# Test cases for Number of Islands — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each `name = value` line is an argument, `expected` is the correct answer.
+# Values are JSON (true, false, null, "text") or Python expressions like [["1"] * 100 for _ in range(90)].
+# Leave `expected` out to just see what your solution returns.
+
+# Example 1
+grid = [["1","1","1","1","0"],["1","1","0","1","0"],["1","1","0","0","0"],["0","0","0","0","0"]]
+expected = 1
+
+# Example 2
+grid = [["1","1","0","0","0"],["1","1","0","0","0"],["0","0","1","0","0"],["0","0","0","1","1"]]
+expected = 3
+
+# single water cell
+grid = [["0"]]
+expected = 0
+
+# single land cell
+grid = [["1"]]
+expected = 1
+
+# all water
+grid = [["0","0","0"],["0","0","0"]]
+expected = 0
+
+# land cells that touch only diagonally are separate islands
+grid = [["1","0","1"],["0","1","0"],["1","0","1"]]
+expected = 5
+
+# one row
+grid = [["1","0","1","1","0","1"]]
+expected = 3
+
+# one column
+grid = [["1"],["1"],["0"],["1"]]
+expected = 2
+
+# U shape: the two arms join only at the bottom row
+grid = [["1","0","1"],["1","0","1"],["1","1","1"]]
+expected = 1
+
+# ring of land around a lake, small island in the lake
+grid = [["1","1","1","1","1"],["1","0","0","0","1"],["1","0","1","0","1"],["1","0","0","0","1"],["1","1","1","1","1"]]
+expected = 2
+
+# 300 x 300: land rows split by water rows, 150 islands
+grid = [["1" if r % 2 == 0 else "0"] * 300 for r in range(300)]
+expected = 150
+
+# 90 x 100 all land: one island of 9000 cells
+grid = [["1"] * 100 for _ in range(90)]
+expected = 1
