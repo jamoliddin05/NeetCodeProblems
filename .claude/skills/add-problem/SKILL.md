@@ -18,11 +18,19 @@ Copy the starter verbatim: NeetCode often renames LeetCode's methods (`hasDuplic
 can't be read, work from what you know about the problem and say the signature should be
 double-checked.
 
+Both sites render the editor with JavaScript, so a plain fetch never shows the starter code. For
+a leetcode.com link, LeetCode's public GraphQL endpoint returns it along with the rest
+(`POST https://leetcode.com/graphql`, query `question(titleSlug: $s) { questionFrontendId title
+difficulty isPaidOnly content hints exampleTestcaseList codeSnippets { langSlug code } }`).
+
 ## 2. Create the folder
 
-`<project root>/<NNNN>_<snake_case_title>/`, e.g. `0217_contains_duplicate/` (LeetCode number,
-zero-padded). Without a known number, use just the snake-case title. If the folder already
-exists, never overwrite `solution.py` — it's the user's work; ask first.
+`<project root>/<NN_topic>/<NNNN>_<snake_case_title>/`, e.g.
+`01_arrays_hashing/0217_contains_duplicate/` (LeetCode number, zero-padded). Problems are grouped
+by topic folder; put the new one in the existing topic folder it belongs to (`ls` the root),
+and create a new one only if no topic fits. Without a known number, use just the snake-case
+title. If the problem folder already exists anywhere in the project, never overwrite
+`solution.py` — it's the user's work; ask first.
 
 ### README.md
 Title with number, difficulty, link(s), then the task restated clearly in your own words (don't
