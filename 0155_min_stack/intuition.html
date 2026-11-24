@@ -1,0 +1,450 @@
+<title>Min Stack, Two Stacks</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: a plate rack. Two stacks drawn row by row side by side, the rows lined up so row k of one sits next to row k of the other; the "why" sections below use the same rows. */
+  :root {
+    --bg: #F1F2EE;
+    --panel: #FFFFFF;
+    --ink: #1C2321;
+    --muted: #5F6A66;
+    --rule: #D6DAD5;
+    --paper: #E8EBE6;
+    --main: #2B5C8A;
+    --main-soft: #DCE7F2;
+    --min: #1F7A5A;
+    --min-soft: #D6EEE3;
+    --top: #F6E7B8;
+    --wrong: #B4232C;
+    --wrong-soft: #F7DADB;
+    --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111614; --panel: #19201D; --ink: #E4EAE7; --muted: #95A39D; --rule: #2B3531; --paper: #212A26;
+      --main: #7EB2E4; --main-soft: #1E3349; --min: #5FCB9F; --min-soft: #18392C;
+      --top: #4A3F1C; --wrong: #F07178; --wrong-soft: #45202A;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111614; --panel: #19201D; --ink: #E4EAE7; --muted: #95A39D; --rule: #2B3531; --paper: #212A26;
+    --main: #7EB2E4; --main-soft: #1E3349; --min: #5FCB9F; --min-soft: #18392C;
+    --top: #4A3F1C; --wrong: #F07178; --wrong-soft: #45202A;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+  .wrap {
+    max-width: 960px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 32px 72px;
+    display: grid; gap: 28px;
+  }
+  header { display: grid; gap: 10px; max-width: 68ch; }
+  .eyebrow { margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); line-height: 1.08; text-wrap: balance; }
+  h2 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1.2; text-wrap: balance; }
+  h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 17px; }
+  .lede { margin: 0; color: var(--muted); font-size: 17px; }
+  p { margin: 0; }
+  code, .num { font-family: var(--mono); font-size: .92em; font-variant-numeric: tabular-nums slashed-zero; }
+  .m { color: var(--main); font-weight: 600; }
+  .n { color: var(--min); font-weight: 600; }
+
+  .panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; min-width: 0; display: grid; gap: 14px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; }
+  .field { display: grid; gap: 4px; min-width: 0; }
+  .field > label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  input[type="text"], select {
+    font: 14px var(--mono); color: var(--ink); background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 6px; padding: 7px 9px; min-width: 0;
+  }
+  input[type="text"] { width: 9ch; }
+  button {
+    font: 600 14px var(--body); color: var(--ink); background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 6px; padding: 7px 12px; cursor: pointer;
+  }
+  button.code { font-family: var(--mono); font-weight: 600; }
+  button:hover:not(:disabled) { border-color: var(--main); }
+  button:disabled { opacity: .45; cursor: default; }
+  :focus-visible { outline: 2px solid var(--main); outline-offset: 2px; }
+  .error { color: var(--wrong); font-size: 13px; min-height: 1.2em; }
+  .hint { font-size: 13px; color: var(--muted); }
+
+  .stage { display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 680px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+
+  .rack { display: grid; grid-template-columns: auto 88px 88px; gap: 4px 8px; align-items: center; justify-content: start; }
+  .rack .head { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; text-align: center; padding-bottom: 2px; }
+  .rack .head.m { color: var(--main); }
+  .rack .head.n { color: var(--min); }
+  .rack .lab { font: 12px var(--mono); color: var(--muted); text-align: right; padding-right: 2px; }
+  .cell {
+    height: 34px; display: grid; place-items: center; border-radius: 6px;
+    font: 600 15px var(--mono); font-variant-numeric: tabular-nums slashed-zero;
+    border: 1.5px solid transparent;
+  }
+  .cell.m { background: var(--main-soft); color: var(--main); border-color: color-mix(in srgb, var(--main) 35%, transparent); }
+  .cell.n { background: var(--min-soft); color: var(--min); border-color: color-mix(in srgb, var(--min) 35%, transparent); }
+  .cell.is-top { box-shadow: 0 0 0 3px var(--top); }
+  .cell.empty { border: 1.5px dashed var(--rule); color: var(--muted); font-weight: 400; font-size: 13px; background: transparent; }
+  .rack .base { grid-column: 2 / 4; border-top: 2px solid var(--muted); margin-top: 2px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cell.fresh { animation: drop .28s ease-out; }
+    @keyframes drop { from { transform: translateY(-10px); opacity: .2; } to { transform: none; opacity: 1; } }
+  }
+
+  .reads { display: flex; flex-wrap: wrap; gap: 8px 22px; font: 15px var(--mono); }
+  .reads b { font-weight: 600; }
+  .side { display: grid; gap: 14px; min-width: 0; }
+  .steps { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  .script { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font: 13px var(--mono); padding: 5px 9px; color: var(--muted); background: transparent; }
+  .chip.done { color: var(--ink); background: var(--paper); }
+  .chip.now { color: var(--ink); background: var(--top); border-color: var(--top); font-weight: 600; }
+  button.primary { background: var(--main); border-color: var(--main); color: var(--panel); }
+  button.primary:hover:not(:disabled) { filter: brightness(1.1); }
+
+  .compare { border-top: 1px solid var(--rule); padding-top: 12px; display: grid; gap: 8px; min-width: 0; }
+  .verdict { font-size: 14px; padding: 8px 10px; border-radius: 6px; }
+  .verdict.ok { background: var(--min-soft); }
+  .verdict.bad { background: var(--wrong-soft); }
+  .varbox { font: 600 15px var(--mono); }
+  .sorted { display: flex; flex-wrap: wrap; gap: 4px; }
+  .sorted .cell { width: 44px; height: 30px; font-size: 13px; background: var(--paper); color: var(--ink); }
+  .sorted .cell.moved { border-color: var(--wrong); }
+  .sorted .cell.new { background: var(--top); }
+
+  section { display: grid; gap: 12px; max-width: 72ch; }
+  section ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  .key { border-left: 3px solid var(--min); padding: 8px 12px; background: var(--panel); border-radius: 0 6px 6px 0; }
+  .fig { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: end; }
+  .fig .rack { grid-template-columns: auto 64px 64px; }
+  .fig .cap { font-size: 13px; color: var(--muted); max-width: 26ch; }
+  .tbl { overflow-x: auto; }
+  table { border-collapse: collapse; font-size: 14px; min-width: 520px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  td.bad { color: var(--wrong); }
+  td.ok { color: var(--min); }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">155 · Min Stack · Medium</p>
+    <h1>Two stacks that grow and shrink together</h1>
+    <p class="lede">The second stack has one row for every row of the first. Row <span class="num">k</span> of it holds the smallest value in rows <span class="num">0</span> to <span class="num">k</span> of the first stack. Step through the calls below and watch both change at the top only.</p>
+  </header>
+
+  <div class="panel">
+    <div class="toolbar">
+      <div class="field">
+        <label for="which">Calls</label>
+        <select id="which">
+          <option value="ex1">Example 1</option>
+          <option value="popmin">Popping the minimum</option>
+          <option value="dup">Same minimum twice</option>
+          <option value="down">Smaller and smaller</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="cmp">Compare with</label>
+        <select id="cmp">
+          <option value="none">Nothing</option>
+          <option value="var">One min variable</option>
+          <option value="sorted">A sorted list</option>
+        </select>
+      </div>
+    </div>
+    <ol class="script" id="script" aria-label="Calls, in order"></ol>
+    <div class="row">
+      <button id="reset" type="button">Start over</button>
+      <button id="back" type="button">Back</button>
+      <button id="next" type="button" class="primary">Next</button>
+      <span class="hint" id="count" role="status"></span>
+      <span class="hint">Arrow keys work too. Click a call to jump to it.</span>
+    </div>
+
+    <div class="stage">
+      <div class="rack" id="rack" aria-label="Both stacks, row by row"></div>
+      <div class="side">
+        <div class="reads" id="reads"></div>
+        <ul class="steps" id="story"></ul>
+        <div class="compare" id="compare" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Why one number is not enough</h2>
+    <p>The first idea is to keep one variable <code>min</code> and update it on every push. Push works. Pop breaks it. Try it:</p>
+    <ul>
+      <li><code>push(3)</code>: <code>min</code> becomes <span class="num">3</span>.</li>
+      <li><code>push(1)</code>: <span class="num">1</span> is smaller, so <code>min</code> becomes <span class="num">1</span>.</li>
+      <li><code>pop()</code>: removes <span class="num">1</span>. The stack is now just <span class="num">3</span>, so the minimum should be <span class="num">3</span>.</li>
+      <li>But <code>min</code> still says <span class="num">1</span>. When it changed from <span class="num">3</span> to <span class="num">1</span>, the <span class="num">3</span> was written over. Nothing remembers it.</li>
+    </ul>
+    <p>To get <span class="num">3</span> back you would have to look through the whole stack again. With n elements that is n steps, which breaks the O(1) rule. (O(1) means each call does the same small amount of work no matter how big the stack is. O(n) means the work can grow with the number of elements.)</p>
+    <p>The fix: never write over an old minimum. Keep every one of them, in the order they were made. That list of minimums is the second stack. To watch the variable go wrong, choose "Popping the minimum" in the Calls menu above, "One min variable" in the Compare menu, and press Next until the first <code>pop()</code>.</p>
+  </section>
+
+  <section>
+    <h2>Is the second one a stack or a list?</h2>
+    <p>In Python it is a list. Both of them are. "Stack" is not a different type here. It describes how the list is used: you add only at the end with <code>append</code>, and you remove only from the end with <code>pop()</code>. Your solution can use two ordinary Python lists.</p>
+    <p>So the real question is: why touch the second list only at its end? Take the stack <span class="num">3, 1, 2</span>:</p>
+
+    <div class="fig" id="fig1"></div>
+
+    <ul>
+      <li><code>pop()</code> always removes the newest value. Here that is <span class="num">2</span>, in row <span class="num">2</span>.</li>
+      <li>The minimum written when <span class="num">2</span> was pushed is also the newest minimum: row <span class="num">2</span> of the min stack, the last <span class="num">1</span>. So it is at the end of the second list too.</li>
+      <li>Remove it. The min stack is now <span class="num">3, 1</span>. Its end is <span class="num">1</span>, and the smallest of <span class="num">3</span> and <span class="num">1</span> is <span class="num">1</span>. Correct, with no searching.</li>
+      <li>Rows <span class="num">0</span> and <span class="num">1</span> of the min stack did not need to change. Row <span class="num">0</span> describes only row <span class="num">0</span> of the main stack. Row <span class="num">1</span> describes only rows <span class="num">0</span> and <span class="num">1</span>. Those rows are still there and still hold <span class="num">3</span> and <span class="num">1</span>.</li>
+    </ul>
+
+    <p class="key">Row <span class="num">k</span> of the min stack depends only on rows <span class="num">0</span> to <span class="num">k</span> of the main stack. Those rows cannot change while row <span class="num">k</span> exists, because the main stack changes only at its top. So a minimum written at push time stays correct until its own row is popped.</p>
+
+    <p>That is why the second list must change in the same places as the first: add at the end when the first adds at the end, remove from the end when the first removes from the end. Then both lists always have the same length, and row <span class="num">k</span> of one belongs to row <span class="num">k</span> of the other.</p>
+  </section>
+
+  <section>
+    <h2>What about a sorted list of the values?</h2>
+    <p>Another idea for the second list: keep all the values sorted, so the smallest is always first. <code>getMin()</code> would be easy. The trouble is push and pop. Take the stack <span class="num">3, 1, 2</span> again. The sorted list is <span class="num">1, 2, 3</span>.</p>
+    <ul>
+      <li><code>pop()</code> removes <span class="num">2</span>, the newest value. In the sorted list <span class="num">2</span> is in the middle. You have to find it, remove it, and shift <span class="num">3</span> one place left.</li>
+      <li><code>push(0)</code> puts <span class="num">0</span> at the front of the sorted list. Every other value shifts one place right.</li>
+    </ul>
+    <p>With n values a single push or pop can move n values: O(n). The answers are right, but each call does more and more work as the stack grows. To count the moves, choose "Smaller and smaller" in the Calls menu and "A sorted list" in the Compare menu. Every push lands at the front.</p>
+    <p>The reason it goes wrong: the stack removes the <em>newest</em> value, and a sorted list keeps values by <em>size</em>, not by age. The newest value can be anywhere in it. A heap has the same problem. (A heap is a list kept only partly sorted, so that the smallest value is always first. In Python that is the <code>heapq</code> module. Adding a value or removing the smallest one costs O(log n), much less than shifting a sorted list.) For the stack <span class="num">3, 1, 2</span> the heap could be <span class="num">1, 3, 2</span>. Removing the smallest value is easy, but <code>pop()</code> asks it to remove the newest one, <span class="num">2</span>. To find <span class="num">2</span> in the heap you would have to search for it. Only a list ordered by age, newest at the end, puts the value <code>pop()</code> removes in a place you can reach in one step. A list ordered by age and used only at its end is exactly a stack.</p>
+  </section>
+
+  <section>
+    <h2>Cost of each call</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Second structure</th><th>push</th><th>pop</th><th>getMin</th><th>Answers right?</th></tr></thead>
+        <tbody>
+          <tr><td>One <code>min</code> variable</td><td>O(1)</td><td>O(1)</td><td>O(1)</td><td class="bad">No, wrong after popping the minimum</td></tr>
+          <tr><td>One variable, scan again after pop</td><td>O(1)</td><td>O(n)</td><td>O(1)</td><td class="ok">Yes, but pop is slow</td></tr>
+          <tr><td>Sorted list of values</td><td>O(n)</td><td>O(n)</td><td>O(1)</td><td class="ok">Yes, but push and pop are slow</td></tr>
+          <tr><td>Min stack (list used at its end)</td><td>O(1)</td><td>O(1)</td><td>O(1)</td><td class="ok">Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The min stack uses one extra slot per element, so n extra slots for n elements: O(n) space, which is what the problem allows.</p>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const N = v => `<span class="num">${v}</span>`;
+  const list = a => a.map(N).join(", ");
+
+  const SCRIPTS = {
+    ex1: [["push", 1], ["push", 2], ["push", 0], ["getMin"], ["pop"], ["top"], ["getMin"]],
+    popmin: [["push", 3], ["push", 1], ["push", 2], ["getMin"], ["pop"], ["getMin"], ["pop"], ["getMin"]],
+    dup: [["push", 2], ["push", 0], ["push", 3], ["push", 0], ["getMin"], ["pop"], ["getMin"], ["pop"], ["getMin"], ["pop"], ["getMin"]],
+    down: [["push", 5], ["push", 4], ["push", 3], ["push", 2], ["push", 1], ["getMin"], ["pop"], ["getMin"], ["pop"], ["getMin"]],
+  };
+  const callText = c => c[0] === "push" ? `push(${c[1]})` : `${c[0]}()`;
+
+  let script = SCRIPTS.ex1, step = 0;
+  let stack, mins, oneVar, sorted, last;
+
+  function doPush(v) {
+    const k = stack.length;
+    const prevMin = k ? mins[k - 1] : null;
+    const newMin = prevMin === null ? v : Math.min(v, prevMin);
+    stack.push(v); mins.push(newMin);
+    oneVar = oneVar === null ? v : Math.min(oneVar, v);
+    let at = sorted.findIndex(x => x > v);
+    if (at < 0) at = sorted.length;
+    const moved = sorted.length - at;
+    sorted.splice(at, 0, v);
+    last = { op: "push", v, k, prevMin, newMin, sortAt: at, moved };
+  }
+
+  function doPop() {
+    const k = stack.length - 1;
+    const v = stack.pop(), m = mins.pop();
+    // The variable approach has nothing to fall back to, so it keeps its old value.
+    if (!stack.length) oneVar = null;
+    const at = sorted.lastIndexOf(v);
+    const moved = sorted.length - at - 1;
+    sorted.splice(at, 1);
+    last = { op: "pop", v, m, k, sortAt: at, moved };
+  }
+
+  // Replaying from the start keeps Back trivial: no undo bookkeeping.
+  function replay() {
+    stack = []; mins = []; oneVar = null; sorted = []; last = null;
+    for (const c of script.slice(0, step)) {
+      if (c[0] === "push") doPush(c[1]);
+      else if (c[0] === "pop") doPop();
+      else last = { op: c[0] };
+    }
+  }
+
+  function rackHTML(st, mn, opts = {}) {
+    const rows = Math.max(st.length, opts.minRows ?? 1);
+    let h = `<div></div><div class="head m">stack</div><div class="head n">min stack</div>`;
+    for (let i = rows - 1; i >= 0; i--) {
+      const has = i < st.length;
+      const top = has && i === st.length - 1;
+      const fresh = opts.freshRow === i ? " fresh" : "";
+      h += `<div class="lab">row ${i}</div>`;
+      if (has) {
+        h += `<div class="cell m${top ? " is-top" : ""}${fresh}">${st[i]}</div>`;
+        h += `<div class="cell n${top ? " is-top" : ""}${fresh}">${mn[i]}</div>`;
+      } else {
+        h += `<div class="cell empty">empty</div><div class="cell empty">empty</div>`;
+      }
+    }
+    h += `<div></div><div class="base"></div>`;
+    return h;
+  }
+
+  function story() {
+    if (!last) {
+      return [`<code>MinStack()</code> creates two empty lists: the stack and the min stack.`, `Press <b>Next</b> to run the first call.`];
+    }
+    const { op, v, k } = last;
+    if (op === "getMin") {
+      const g = mins[mins.length - 1];
+      return [
+        `<code>getMin()</code> reads the top of the min stack: ${N(g)}.`,
+        `Check: the values in the stack are ${list(stack)}, and the smallest of them is ${N(Math.min(...stack))}.`,
+        `Nothing is added or removed.`,
+      ];
+    }
+    if (op === "top") {
+      return [`<code>top()</code> reads the top of the main stack: ${N(stack[stack.length - 1])}.`, `Nothing is added or removed.`];
+    }
+    if (op === "push") {
+      if (last.prevMin === null) {
+        return [
+          `Main stack: ${N(v)} goes in as row ${N(0)}.`,
+          `The stack was empty, so ${N(v)} is the smallest value so far. Row ${N(0)} of the min stack gets ${N(v)}.`,
+        ];
+      }
+      const p = last.prevMin;
+      const cmp = v < p
+        ? `${N(v)} is smaller than ${N(p)}, so row ${N(k)} of the min stack gets ${N(v)}.`
+        : v === p
+          ? `${N(v)} is equal to ${N(p)}, so row ${N(k)} of the min stack gets ${N(p)}.`
+          : `${N(v)} is bigger than ${N(p)}, so row ${N(k)} of the min stack gets ${N(p)} again.`;
+      return [
+        `Main stack: ${N(v)} goes on top as row ${N(k)}.`,
+        `Before this push, the top of the min stack was ${N(p)}: the smallest of rows ${N(0)} to ${N(k - 1)}.`,
+        cmp,
+        `Rows below did not change.`,
+      ];
+    }
+    const out = [`Removes row ${N(k)} from both stacks: ${N(v)} from the main stack and ${N(last.m)} from the min stack.`];
+    if (!stack.length) {
+      out.push(`Both stacks are empty again.`);
+    } else {
+      out.push(`The top of the min stack is now row ${N(k - 1)}: ${N(mins[mins.length - 1])}.`);
+      out.push(`Check: the values left are ${list(stack)}, and the smallest of them is ${N(Math.min(...stack))}.`);
+      out.push(`Rows ${N(0)} to ${N(k - 1)} were not touched. They describe values that are still in the stack.`);
+    }
+    return out;
+  }
+
+  function compareHTML(mode) {
+    const truth = stack.length ? Math.min(...stack) : null;
+    if (mode === "var") {
+      let h = `<h3>One min variable</h3>`;
+      h += `<div class="varbox">min = ${oneVar === null ? "None" : oneVar}</div>`;
+      if (!stack.length) {
+        h += `<p class="hint">Nothing pushed yet.</p>`;
+      } else if (oneVar === truth) {
+        h += `<p class="verdict ok">Right for now: the smallest value in the stack is ${N(truth)}.</p>`;
+      } else {
+        h += `<p class="verdict bad">Wrong. The smallest value in the stack is ${N(truth)}, but the variable still says ${N(oneVar)}. That value was popped, and the variable has no record of what the minimum was before it.</p>`;
+      }
+      return h;
+    }
+    const moving = last && (last.op === "push" || last.op === "pop");
+    let h = `<h3>A sorted list</h3><div class="sorted">`;
+    sorted.forEach((x, i) => {
+      let cls = "";
+      if (moving && last.op === "push") {
+        if (i === last.sortAt) cls = " new";
+        else if (i > last.sortAt) cls = " moved";
+      } else if (moving && i >= last.sortAt) {
+        cls = " moved";
+      }
+      h += `<div class="cell${cls}">${x}</div>`;
+    });
+    if (!sorted.length) h += `<div class="cell empty">empty</div>`;
+    h += `</div>`;
+    if (moving) {
+      const where = last.op === "push"
+        ? `${N(last.v)} went in at position ${N(last.sortAt)}`
+        : `${N(last.v)} was removed from position ${N(last.sortAt)}`;
+      h += `<p class="verdict ${last.moved ? "bad" : "ok"}">${where}. Values that had to shift: ${N(last.moved)} (outlined in red). The min stack shifted ${N(0)}.</p>`;
+    }
+    h += `<p class="hint">Here <code>getMin()</code> is the first value of the sorted list. It is always right, but push and pop shift values.</p>`;
+    return h;
+  }
+
+  function render(fresh) {
+    $("rack").innerHTML = rackHTML(stack, mins, { minRows: 1, freshRow: fresh ? stack.length - 1 : -1 });
+    const t = stack.length ? stack[stack.length - 1] : "—";
+    const g = mins.length ? mins[mins.length - 1] : "—";
+    $("reads").innerHTML = `<span>top() = <b class="m">${t}</b></span><span>getMin() = <b class="n">${g}</b></span>`;
+    $("story").innerHTML = story().map(s => `<li>${s}</li>`).join("");
+    const chips = ["MinStack()", ...script.map(callText)];
+    $("script").innerHTML = chips.map((c, i) =>
+      `<li><button type="button" data-i="${i}" class="chip${i === step ? " now" : i < step ? " done" : ""}"${i === step ? ' aria-current="step"' : ""}>${c}</button></li>`
+    ).join("");
+    $("count").textContent = `Step ${step} of ${script.length}`;
+    $("back").disabled = step === 0;
+    $("reset").disabled = step === 0;
+    $("next").disabled = step === script.length;
+    const mode = $("cmp").value;
+    $("compare").hidden = mode === "none";
+    if (mode !== "none") $("compare").innerHTML = compareHTML(mode);
+  }
+
+  function go(to) {
+    const forward = to === step + 1;
+    step = Math.max(0, Math.min(script.length, to));
+    replay();
+    render(forward && last && last.op === "push");
+  }
+
+  $("next").addEventListener("click", () => go(step + 1));
+  $("back").addEventListener("click", () => go(step - 1));
+  $("reset").addEventListener("click", () => go(0));
+  $("script").addEventListener("click", e => {
+    const b = e.target.closest("button[data-i]");
+    if (b) go(Number(b.dataset.i));
+  });
+  $("which").addEventListener("change", () => { script = SCRIPTS[$("which").value]; go(0); });
+  $("cmp").addEventListener("change", () => render(false));
+  document.addEventListener("keydown", e => {
+    if (e.target.closest("input, select, textarea")) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); go(step + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); go(step - 1); }
+  });
+
+  // Static figure: the stack 3, 1, 2 before and after one pop().
+  $("fig1").innerHTML =
+    `<div class="rack">${rackHTML([3, 1, 2], [3, 1, 1])}</div>` +
+    `<p class="cap">Before <code>pop()</code>. Each min-stack row is the smallest of its row and every row below it.</p>` +
+    `<div class="rack">${rackHTML([3, 1], [3, 1], { minRows: 3 })}</div>` +
+    `<p class="cap">After <code>pop()</code>. Row ${N(2)} is gone from both. Nothing else changed.</p>`;
+
+  go(0);
+})();
+</script>

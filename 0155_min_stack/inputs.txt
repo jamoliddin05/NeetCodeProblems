@@ -1,0 +1,107 @@
+# Test cases for Min Stack — run them with: python tests.py
+#
+# One case per block, blocks separated by a blank line; the "# ..." line on top names the case.
+# Each line is one call on the same object; the first line creates it.
+# `-> value` after a call is the value it must return; calls without `->` aren't checked.
+# Values are JSON (true, false, null, "text") or Python expressions.
+
+# Example 1
+MinStack()
+push(1)
+push(2)
+push(0)
+getMin() -> 0
+pop()
+top() -> 2
+getMin() -> 1
+
+# LeetCode example: negatives
+MinStack()
+push(-2)
+push(0)
+push(-3)
+getMin() -> -3
+pop()
+top() -> 0
+getMin() -> -2
+
+# single element
+MinStack()
+push(5)
+top() -> 5
+getMin() -> 5
+
+# top and getMin don't remove anything
+MinStack()
+push(7)
+top() -> 7
+top() -> 7
+getMin() -> 7
+getMin() -> 7
+push(6)
+top() -> 6
+getMin() -> 6
+
+# popping the minimum brings back the previous one
+MinStack()
+push(3)
+push(1)
+push(2)
+getMin() -> 1
+pop()
+getMin() -> 1
+pop()
+getMin() -> 3
+
+# minimum pushed twice: one pop must not lose it
+MinStack()
+push(2)
+push(0)
+push(3)
+push(0)
+getMin() -> 0
+pop()
+getMin() -> 0
+pop()
+getMin() -> 0
+pop()
+getMin() -> 2
+
+# decreasing pushes: the minimum changes on every pop
+MinStack()
+push(5)
+push(4)
+push(3)
+getMin() -> 3
+pop()
+getMin() -> 4
+pop()
+getMin() -> 5
+
+# increasing pushes: the minimum stays at the bottom
+MinStack()
+push(1)
+push(2)
+push(3)
+getMin() -> 1
+pop()
+getMin() -> 1
+top() -> 2
+
+# stack emptied, then filled again
+MinStack()
+push(1)
+pop()
+push(2)
+getMin() -> 2
+top() -> 2
+
+# 32-bit extremes
+MinStack()
+push(-2147483648)
+push(2147483647)
+getMin() -> -2147483648
+top() -> 2147483647
+pop()
+top() -> -2147483648
+getMin() -> -2147483648
