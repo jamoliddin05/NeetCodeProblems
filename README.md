@@ -5,42 +5,29 @@ Problems grouped by topic. Each folder has `README.md` (the task), `solution.py`
 `python tests.py 3` runs one case, `-x` stops at the first failure.
 
 Folders marked NeetCode came from the NeetCode 150 list; the rest are the LeetCode list (1 easy + 5 medium per topic).
-123 problems: 23 easy, 99 medium, 1 hard.
+84 problems: 14 easy, 70 medium, 0 hard.
 
 ## 01 · Arrays & Hashing
 
 | Problem | Difficulty | LeetCode | Set |
 |---|---|---|---|
 | [1. Two Sum](01_arrays_hashing/0001_two_sum/) | Easy | [link](https://leetcode.com/problems/two-sum/) | NeetCode |
-| [169. Majority Element](01_arrays_hashing/0169_majority_element/) | Easy | [link](https://leetcode.com/problems/majority-element/) | LeetCode list |
-| [217. Contains Duplicate](01_arrays_hashing/0217_contains_duplicate/) | Easy | [link](https://leetcode.com/problems/contains-duplicate/) | NeetCode |
-| [242. Valid Anagram](01_arrays_hashing/0242_valid_anagram/) | Easy | [link](https://leetcode.com/problems/valid-anagram/) | NeetCode |
-| [31. Next Permutation](01_arrays_hashing/0031_next_permutation/) | Medium | [link](https://leetcode.com/problems/next-permutation/) | LeetCode list |
-| [36. Valid Sudoku](01_arrays_hashing/0036_valid_sudoku/) | Medium | [link](https://leetcode.com/problems/valid-sudoku/) | LeetCode list |
 | [49. Group Anagrams](01_arrays_hashing/0049_group_anagrams/) | Medium | [link](https://leetcode.com/problems/group-anagrams/) | NeetCode |
 | [128. Longest Consecutive Sequence](01_arrays_hashing/0128_longest_consecutive_sequence/) | Medium | [link](https://leetcode.com/problems/longest-consecutive-sequence/) | NeetCode |
-| [189. Rotate Array](01_arrays_hashing/0189_rotate_array/) | Medium | [link](https://leetcode.com/problems/rotate-array/) | LeetCode list |
 | [238. Product of Array Except Self](01_arrays_hashing/0238_product_of_array_except_self/) | Medium | [link](https://leetcode.com/problems/product-of-array-except-self/) | NeetCode |
 | [271. Encode and Decode Strings](01_arrays_hashing/0271_encode_and_decode_strings/) | Medium | [link](https://leetcode.com/problems/encode-and-decode-strings/) | NeetCode |
 | [347. Top K Frequent Elements](01_arrays_hashing/0347_top_k_frequent_elements/) | Medium | [link](https://leetcode.com/problems/top-k-frequent-elements/) | NeetCode |
-| [380. Insert Delete GetRandom O(1)](01_arrays_hashing/0380_insert_delete_getrandom_o1/) | Medium | [link](https://leetcode.com/problems/insert-delete-getrandom-o1/) | LeetCode list |
-| [560. Subarray Sum Equals K](01_arrays_hashing/0560_subarray_sum_equals_k/) | Medium | [link](https://leetcode.com/problems/subarray-sum-equals-k/) | LeetCode list |
 
 ## 02 · Two Pointers
 
 | Problem | Difficulty | LeetCode | Set |
 |---|---|---|---|
 | [125. Valid Palindrome](02_two_pointers/0125_valid_palindrome/) | Easy | [link](https://leetcode.com/problems/valid-palindrome/) | NeetCode |
-| [680. Valid Palindrome II](02_two_pointers/0680_valid_palindrome_ii/) | Easy | [link](https://leetcode.com/problems/valid-palindrome-ii/) | LeetCode list |
 | [11. Container With Most Water](02_two_pointers/0011_container_with_most_water/) | Medium | [link](https://leetcode.com/problems/container-with-most-water/) | NeetCode |
 | [15. 3Sum](02_two_pointers/0015_3sum/) | Medium | [link](https://leetcode.com/problems/3sum/) | NeetCode |
-| [16. 3Sum Closest](02_two_pointers/0016_3sum_closest/) | Medium | [link](https://leetcode.com/problems/3sum-closest/) | LeetCode list |
-| [18. 4Sum](02_two_pointers/0018_4sum/) | Medium | [link](https://leetcode.com/problems/4sum/) | LeetCode list |
 | [75. Sort Colors](02_two_pointers/0075_sort_colors/) | Medium | [link](https://leetcode.com/problems/sort-colors/) | LeetCode list |
-| [80. Remove Duplicates from Sorted Array II](02_two_pointers/0080_remove_duplicates_from_sorted_array_ii/) | Medium | [link](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/) | LeetCode list |
 | [167. Two Sum II - Input Array Is Sorted](02_two_pointers/0167_two_sum_ii_input_array_is_sorted/) | Medium | [link](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) | NeetCode |
 | [881. Boats to Save People](02_two_pointers/0881_boats_to_save_people/) | Medium | [link](https://leetcode.com/problems/boats-to-save-people/) | LeetCode list |
-| [42. Trapping Rain Water](02_two_pointers/0042_trapping_rain_water/) | Hard | [link](https://leetcode.com/problems/trapping-rain-water/) | NeetCode |
 
 ## 03 · Sliding Window
 
@@ -58,8 +45,6 @@ Folders marked NeetCode came from the NeetCode 150 list; the rest are the LeetCo
 | Problem | Difficulty | LeetCode | Set |
 |---|---|---|---|
 | [20. Valid Parentheses](04_stack/0020_valid_parentheses/) | Easy | [link](https://leetcode.com/problems/valid-parentheses/) | NeetCode |
-| [232. Implement Queue using Stacks](04_stack/0232_implement_queue_using_stacks/) | Easy | [link](https://leetcode.com/problems/implement-queue-using-stacks/) | LeetCode list |
-| [150. Evaluate Reverse Polish Notation](04_stack/0150_evaluate_reverse_polish_notation/) | Medium | [link](https://leetcode.com/problems/evaluate-reverse-polish-notation/) | LeetCode list |
 | [155. Min Stack](04_stack/0155_min_stack/) | Medium | [link](https://leetcode.com/problems/min-stack/) | NeetCode |
 | [227. Basic Calculator II](04_stack/0227_basic_calculator_ii/) | Medium | [link](https://leetcode.com/problems/basic-calculator-ii/) | LeetCode list |
 | [394. Decode String](04_stack/0394_decode_string/) | Medium | [link](https://leetcode.com/problems/decode-string/) | LeetCode list |
@@ -165,28 +150,6 @@ Folders marked NeetCode came from the NeetCode 150 list; the rest are the LeetCo
 | [300. Longest Increasing Subsequence](13_dp_1d/0300_longest_increasing_subsequence/) | Medium | [link](https://leetcode.com/problems/longest-increasing-subsequence/) | LeetCode list |
 | [322. Coin Change](13_dp_1d/0322_coin_change/) | Medium | [link](https://leetcode.com/problems/coin-change/) | LeetCode list |
 
-## 14 · 2-D Dynamic Programming
-
-| Problem | Difficulty | LeetCode | Set |
-|---|---|---|---|
-| [118. Pascal's Triangle](14_dp_2d/0118_pascals_triangle/) | Easy | [link](https://leetcode.com/problems/pascals-triangle/) | LeetCode list |
-| [62. Unique Paths](14_dp_2d/0062_unique_paths/) | Medium | [link](https://leetcode.com/problems/unique-paths/) | LeetCode list |
-| [72. Edit Distance](14_dp_2d/0072_edit_distance/) | Medium | [link](https://leetcode.com/problems/edit-distance/) | LeetCode list |
-| [221. Maximal Square](14_dp_2d/0221_maximal_square/) | Medium | [link](https://leetcode.com/problems/maximal-square/) | LeetCode list |
-| [518. Coin Change II](14_dp_2d/0518_coin_change_ii/) | Medium | [link](https://leetcode.com/problems/coin-change-ii/) | LeetCode list |
-| [1143. Longest Common Subsequence](14_dp_2d/1143_longest_common_subsequence/) | Medium | [link](https://leetcode.com/problems/longest-common-subsequence/) | LeetCode list |
-
-## 15 · Greedy
-
-| Problem | Difficulty | LeetCode | Set |
-|---|---|---|---|
-| [860. Lemonade Change](15_greedy/0860_lemonade_change/) | Easy | [link](https://leetcode.com/problems/lemonade-change/) | LeetCode list |
-| [45. Jump Game II](15_greedy/0045_jump_game_ii/) | Medium | [link](https://leetcode.com/problems/jump-game-ii/) | LeetCode list |
-| [53. Maximum Subarray](15_greedy/0053_maximum_subarray/) | Medium | [link](https://leetcode.com/problems/maximum-subarray/) | LeetCode list |
-| [55. Jump Game](15_greedy/0055_jump_game/) | Medium | [link](https://leetcode.com/problems/jump-game/) | LeetCode list |
-| [134. Gas Station](15_greedy/0134_gas_station/) | Medium | [link](https://leetcode.com/problems/gas-station/) | LeetCode list |
-| [763. Partition Labels](15_greedy/0763_partition_labels/) | Medium | [link](https://leetcode.com/problems/partition-labels/) | LeetCode list |
-
 ## 16 · Intervals
 
 | Problem | Difficulty | LeetCode | Set |
@@ -197,25 +160,3 @@ Folders marked NeetCode came from the NeetCode 150 list; the rest are the LeetCo
 | [435. Non-overlapping Intervals](16_intervals/0435_non_overlapping_intervals/) | Medium | [link](https://leetcode.com/problems/non-overlapping-intervals/) | LeetCode list |
 | [452. Minimum Number of Arrows to Burst Balloons](16_intervals/0452_minimum_number_of_arrows_to_burst_balloons/) | Medium | [link](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/) | LeetCode list |
 | [986. Interval List Intersections](16_intervals/0986_interval_list_intersections/) | Medium | [link](https://leetcode.com/problems/interval-list-intersections/) | LeetCode list |
-
-## 17 · Math & Geometry
-
-| Problem | Difficulty | LeetCode | Set |
-|---|---|---|---|
-| [13. Roman to Integer](17_math_geometry/0013_roman_to_integer/) | Easy | [link](https://leetcode.com/problems/roman-to-integer/) | LeetCode list |
-| [43. Multiply Strings](17_math_geometry/0043_multiply_strings/) | Medium | [link](https://leetcode.com/problems/multiply-strings/) | LeetCode list |
-| [48. Rotate Image](17_math_geometry/0048_rotate_image/) | Medium | [link](https://leetcode.com/problems/rotate-image/) | LeetCode list |
-| [50. Pow(x, n)](17_math_geometry/0050_pow_x_n/) | Medium | [link](https://leetcode.com/problems/powx-n/) | LeetCode list |
-| [54. Spiral Matrix](17_math_geometry/0054_spiral_matrix/) | Medium | [link](https://leetcode.com/problems/spiral-matrix/) | LeetCode list |
-| [73. Set Matrix Zeroes](17_math_geometry/0073_set_matrix_zeroes/) | Medium | [link](https://leetcode.com/problems/set-matrix-zeroes/) | LeetCode list |
-
-## 18 · Bit Manipulation
-
-| Problem | Difficulty | LeetCode | Set |
-|---|---|---|---|
-| [136. Single Number](18_bit_manipulation/0136_single_number/) | Easy | [link](https://leetcode.com/problems/single-number/) | LeetCode list |
-| [137. Single Number II](18_bit_manipulation/0137_single_number_ii/) | Medium | [link](https://leetcode.com/problems/single-number-ii/) | LeetCode list |
-| [201. Bitwise AND of Numbers Range](18_bit_manipulation/0201_bitwise_and_of_numbers_range/) | Medium | [link](https://leetcode.com/problems/bitwise-and-of-numbers-range/) | LeetCode list |
-| [260. Single Number III](18_bit_manipulation/0260_single_number_iii/) | Medium | [link](https://leetcode.com/problems/single-number-iii/) | LeetCode list |
-| [371. Sum of Two Integers](18_bit_manipulation/0371_sum_of_two_integers/) | Medium | [link](https://leetcode.com/problems/sum-of-two-integers/) | LeetCode list |
-| [477. Total Hamming Distance](18_bit_manipulation/0477_total_hamming_distance/) | Medium | [link](https://leetcode.com/problems/total-hamming-distance/) | LeetCode list |
