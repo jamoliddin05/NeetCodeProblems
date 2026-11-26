@@ -1,0 +1,354 @@
+<title>Sort Colors, Three Pointers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: one strip of cells coloured like the Dutch flag (0 red, 1 white, 2 blue), with the four parts drawn as bands above and the three pointers below; a stepper walks it one look at a time. */
+  :root {
+    --bg: #F2F3F6;
+    --panel: #FFFFFF;
+    --ink: #17202B;
+    --muted: #5C6876;
+    --rule: #D6DBE2;
+    --red: #C8323B;
+    --red-soft: #F7DCDD;
+    --white-cell: #FBFBFC;
+    --blue: #1F4E9E;
+    --blue-soft: #DCE5F5;
+    --one-soft: #ECEEF2;
+    --unseen: #FFF3C9;
+    --unseen-ink: #7A5C00;
+    --focus: #E0A100;
+    --on-red: #FFFFFF;
+    --on-blue: #FFFFFF;
+    --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1319; --panel: #171D25; --ink: #E4E9F0; --muted: #96A2B0; --rule: #2A333E;
+      --red: #F0646C; --red-soft: #3F1D22; --white-cell: #E9ECF1; --blue: #7FA7F0; --blue-soft: #1C2A44;
+      --one-soft: #232B35; --unseen: #3A3115; --unseen-ink: #F2CF6B; --focus: #F2C94C;
+      --on-red: #10151B; --on-blue: #10151B;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1319; --panel: #171D25; --ink: #E4E9F0; --muted: #96A2B0; --rule: #2A333E;
+    --red: #F0646C; --red-soft: #3F1D22; --white-cell: #E9ECF1; --blue: #7FA7F0; --blue-soft: #1C2A44;
+    --one-soft: #232B35; --unseen: #3A3115; --unseen-ink: #F2CF6B; --focus: #F2C94C;
+    --on-red: #10151B; --on-blue: #10151B;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+  .wrap {
+    max-width: 920px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 32px 72px;
+    display: grid; gap: 28px;
+  }
+  header { display: grid; gap: 10px; max-width: 68ch; }
+  .eyebrow { margin: 0; font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font: 700 clamp(30px, 5vw, 44px)/1.08 var(--display); text-wrap: balance; }
+  h2 { margin: 0; font: 600 22px/1.2 var(--display); text-wrap: balance; }
+  .lede { margin: 0; color: var(--muted); font-size: 17px; }
+  .names { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+  .names b { font-family: var(--mono); }
+  .n-low { color: var(--red); }
+  .n-high { color: var(--blue); }
+  .n-i { background: var(--unseen); padding: 0 4px; border-radius: 3px; }
+  p { margin: 0; }
+  code, .num { font-family: var(--mono); font-size: .92em; font-variant-numeric: tabular-nums slashed-zero; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  .panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; }
+  .field { display: grid; gap: 4px; }
+  .field > label { font: 600 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  select { font: 14px var(--mono); color: var(--ink); background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 9px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button { font: 600 14px var(--body); color: var(--ink); background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 14px; cursor: pointer; }
+  button:hover:not(:disabled) { border-color: var(--blue); }
+  button:disabled { opacity: .45; cursor: default; }
+  button.primary { background: var(--blue); border-color: var(--blue); color: var(--panel); }
+  .count { font: 13px var(--mono); color: var(--muted); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid var(--rule); }
+
+  /* The strip: column 1 and the last column are off-array slots so a pointer that runs past an end still has a place. */
+  .strip-wrap { overflow-x: auto; padding-bottom: 4px; }
+  .strip { display: grid; grid-template-columns: repeat(var(--cols), 58px); column-gap: 8px; row-gap: 6px; justify-content: start; min-width: max-content; }
+  .arc { grid-row: 1; }
+  .band { grid-row: 2; height: 26px; border-radius: 5px; display: grid; place-items: center; font: 600 11px var(--mono); letter-spacing: .04em; white-space: nowrap; overflow: hidden; }
+  .band.zeros { background: var(--red-soft); color: var(--red); }
+  .band.ones { background: var(--one-soft); color: var(--muted); }
+  .band.unseen { background: var(--unseen); color: var(--unseen-ink); }
+  .band.twos { background: var(--blue-soft); color: var(--blue); }
+  .idx { grid-row: 3; font: 12px var(--mono); color: var(--muted); text-align: center; }
+  .cell, .slot { grid-row: 4; }
+  .cell { height: 54px; border-radius: 8px; display: grid; place-items: center; font: 600 22px var(--mono); border: 2px solid transparent; position: relative; }
+  .cell.v0 { background: var(--red); color: var(--on-red); }
+  .cell.v1 { background: var(--white-cell); color: #17202B; border-color: var(--rule); }
+  .cell.v2 { background: var(--blue); color: var(--on-blue); }
+  .cell.look { box-shadow: 0 0 0 3px var(--focus); }
+  .cell.swap { box-shadow: 0 0 0 3px var(--focus); }
+  .cell.moved { animation: pop .35s ease-out; }
+  @keyframes pop { from { transform: scale(.82); } to { transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .cell.moved { animation: none; } }
+  .ptrs { grid-row: 5; display: grid; gap: 2px; justify-items: center; align-content: start; min-height: 64px; }
+  .ptr { font: 600 12px var(--mono); padding: 1px 6px; border-radius: 4px; }
+  .ptr::before { content: "▲ "; font-size: 9px; }
+  .ptr.low { color: var(--red); }
+  .ptr.i { color: var(--ink); background: var(--unseen); }
+  .ptr.high { color: var(--blue); }
+  .arc { grid-column: 1 / -1; height: 30px; }
+  .arc svg { display: block; overflow: visible; }
+
+  .say h3 { margin: 0 0 6px; font: 600 17px var(--display); }
+  .say ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 70ch; }
+
+  section { display: grid; gap: 12px; max-width: 72ch; }
+  section ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  .key { border-left: 3px solid var(--focus); padding: 10px 14px; background: var(--panel); border-radius: 0 8px 8px 0; }
+  details { background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 16px; }
+  details > summary { cursor: pointer; font-weight: 600; }
+  details[open] > summary { margin-bottom: 10px; }
+  .tbl { overflow-x: auto; }
+  table { border-collapse: collapse; font-size: 15px; min-width: 520px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font: 600 12px var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">75 · Sort Colors · one pass, in place</p>
+    <h1>Three pointers, four parts</h1>
+    <p class="lede">While you walk through the array once, three pointers split it into four parts: finished <span class="num">0</span>s on the left, finished <span class="num">1</span>s after them, a part you have not looked at yet, and finished <span class="num">2</span>s on the right. Every step looks at one value and makes the unseen part one cell smaller.</p>
+    <ul class="names">
+      <li><b class="n-low">low</b> is the next free place for a <span class="num">0</span>. Everything to its left is finished 0s. It starts at the first position.</li>
+      <li><b class="n-i">i</b> is the cell you are looking at right now.</li>
+      <li><b class="n-high">high</b> is the next free place for a <span class="num">2</span>. Everything to its right is finished 2s. It starts at the last position, because no 2s are placed yet.</li>
+    </ul>
+  </header>
+
+  <div class="panel">
+    <div class="toolbar">
+      <div class="field">
+        <label for="pick">Array</label>
+        <select id="pick">
+          <option value="ex1">Example 1: [2, 0, 2, 1, 1, 0]</option>
+          <option value="mix">0s after 1s: [1, 1, 0, 2, 0]</option>
+          <option value="long">Longer, 10 numbers: [1, 2, 0, 1, 2, 0, 2, 1, 0, 2]</option>
+          <option value="ex2">Example 2: [2, 0, 1]</option>
+          <option value="twos">All 2s: [2, 2, 2]</option>
+          <option value="sorted">Already sorted: [0, 1, 2]</option>
+        </select>
+      </div>
+      <div class="row">
+        <button id="reset" type="button">Start over</button>
+        <button id="back" type="button">Back</button>
+        <button id="next" type="button" class="primary">Next</button>
+        <span class="count" id="count" role="status"></span>
+      </div>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span><i style="background:var(--red-soft)"></i>finished 0s (left of low)</span>
+      <span><i style="background:var(--one-soft)"></i>finished 1s (low up to i)</span>
+      <span><i style="background:var(--unseen)"></i>not looked at yet (i to high)</span>
+      <span><i style="background:var(--blue-soft)"></i>finished 2s (right of high)</span>
+    </div>
+    <div class="strip-wrap"><div class="strip" id="strip" aria-label="The array, its four parts and the three pointers"></div></div>
+    <div class="say" aria-live="polite">
+      <h3 id="title"></h3>
+      <ul id="lines"></ul>
+    </div>
+  </div>
+
+  <section>
+    <h2>Why <code>i</code> moves after one swap but not after the other</h2>
+    <p>Look at what lands at position <code>i</code> after each swap.</p>
+    <ul>
+      <li><b>Swap with low (you found a 0).</b> The value that comes back to <code>i</code> was at <code>low</code>. Everything from <code>low</code> up to <code>i</code> is the 1s part, so that value is a <span class="num">1</span>. You already know it, and it belongs where it now is. So <code>i</code> moves on.</li>
+      <li><b>Swap with high (you found a 2).</b> The value that comes back to <code>i</code> was at <code>high</code>, inside the part you have not looked at. It could be <span class="num">0</span>, <span class="num">1</span> or <span class="num">2</span>. So <code>i</code> stays and looks at it on the next step.</li>
+    </ul>
+    <p>Pick "0s after 1s" above and step to the moment a <span class="num">0</span> is swapped with a <span class="num">1</span>. Then pick "All 2s" and watch <code>i</code> stay at position <span class="num">0</span> while <code>high</code> moves left three times.</p>
+  </section>
+
+  <section>
+    <h2>Is this really a medium?</h2>
+    <p>The counting version you wrote is easy. The one-pass version is rated medium for one reason: you have to keep four parts correct after every single swap, and the rule for <code>i</code> is different after each kind of swap. The code is about ten lines. Getting those ten lines right without the picture above is the hard part, and that is what interviewers are checking.</p>
+    <p class="key">This idea has a name: the Dutch national flag problem, from Edsger Dijkstra. The same three-part split appears again in quicksort partitioning with many equal values.</p>
+  </section>
+
+  <details>
+    <summary>Summary of the rules (open only if you are still stuck after stepping through)</summary>
+    <div class="tbl"><table>
+      <thead><tr><th>Value at i</th><th>Swap</th><th>Then</th></tr></thead>
+      <tbody>
+        <tr><td><span class="num">0</span></td><td>with position <code>low</code></td><td><code>low</code> moves right by one, <code>i</code> moves right by one</td></tr>
+        <tr><td><span class="num">1</span></td><td>none</td><td><code>i</code> moves right by one</td></tr>
+        <tr><td><span class="num">2</span></td><td>with position <code>high</code></td><td><code>high</code> moves left by one, <code>i</code> stays</td></tr>
+      </tbody>
+    </table></div>
+    <p>Keep going while <code>i</code> is at or before <code>high</code>. Start with <code>low = 0</code>, <code>i = 0</code>, <code>high = n - 1</code>.</p>
+  </details>
+</div>
+
+<script>
+(() => {
+  const ARRAYS = {
+    ex1: [2, 0, 2, 1, 1, 0],
+    mix: [1, 1, 0, 2, 0],
+    long: [1, 2, 0, 1, 2, 0, 2, 1, 0, 2],
+    ex2: [2, 0, 1],
+    twos: [2, 2, 2],
+    sorted: [0, 1, 2],
+  };
+  const $ = id => document.getElementById(id);
+  const N = v => `<span class="num">${v}</span>`;
+  const P = name => `<code>${name}</code>`;
+
+  // Each look produces two frames: the decision (before), then the result (after), so the swap is never hidden.
+  function trace(start) {
+    const nums = start.slice(), frames = [];
+    let low = 0, i = 0, high = nums.length - 1;
+    const snap = (extra) => ({ nums: nums.slice(), low, i, high, ...extra });
+    frames.push(snap({ title: "Start", lines: [
+      `Nothing has been looked at, so the whole array is the unseen part.`,
+      `${P("low")} is the next free place for a 0, and ${P("high")} is the next free place for a 2. ${P("i")} is the cell being looked at.`,
+      `${P("low")} and ${P("i")} start at position ${N(0)}. ${P("high")} starts at the last position, ${N(nums.length - 1)}.`,
+    ] }));
+    while (i <= high) {
+      const v = nums[i];
+      if (v === 0) {
+        const same = low === i;
+        frames.push(snap({ look: i, swap: same ? null : [low, i], title: `Look at position ${i}: it is a 0`, lines: [
+          `A ${N(0)} belongs in the 0s part on the left.`,
+          `The next free place for a 0 is position ${N(low)}, where the ${P("low")} pointer is.`,
+          same ? `But ${P("i")} is at position ${N(i)} too. The 0 is already standing in that free place, so nothing needs to move.` : `Swap positions ${N(low)} and ${N(i)}.`,
+        ] }));
+        const back = nums[low];
+        [nums[low], nums[i]] = [nums[i], nums[low]];
+        const oldLow = low, oldI = i;
+        low++; i++;
+        frames.push(snap({ moved: same ? [] : [oldLow, oldI], title: same ? "The 0 stays where it is" : `Swapped positions ${oldLow} and ${oldI}`, lines: [
+          `Position ${N(oldLow)} now holds ${N(0)} and is finished, so ${P("low")} moves from ${N(oldLow)} to ${N(low)}.`,
+          same ? `${P("i")} also moves to ${N(i)}, to look at the next cell. ${P("low")} and ${P("i")} move together like this until ${P("i")} passes a 1. After that, ${P("low")} waits on the first 1, and a 0 found later really gets swapped.`
+               : `Position ${N(oldI)} now holds the ${N(back)} that was at ${P("low")}. Everything between ${P("low")} and ${P("i")} is 1s, so it is always a ${N(1)} you have already passed. ${P("i")} moves on to ${N(i)}.`,
+          `This happens every time you find a 0: both ${P("low")} and ${P("i")} move right by one.`,
+        ] }));
+      } else if (v === 1) {
+        frames.push(snap({ look: i, title: `Look at position ${i}: it is a 1`, lines: [
+          `A ${N(1)} belongs in the middle, and the middle is exactly where ${P("i")} is.`,
+          `No swap is needed.`,
+        ] }));
+        const oldI = i;
+        i++;
+        frames.push(snap({ title: "Leave the 1 where it is", lines: [
+          `The 1s part grows by one cell. ${P("i")} moves from ${N(oldI)} to ${N(i)}.`,
+        ] }));
+      } else {
+        frames.push(snap({ look: i, swap: i === high ? null : [i, high], title: `Look at position ${i}: it is a 2`, lines: [
+          `A ${N(2)} belongs in the 2s part on the right.`,
+          `The next free place for a 2 is position ${N(high)}, where the ${P("high")} pointer is.`,
+          i === high ? `But ${P("i")} is at position ${N(i)} too. The 2 is already standing in that free place, so nothing needs to move.` : `Swap positions ${N(i)} and ${N(high)}.`,
+        ] }));
+        const came = nums[high];
+        const same = i === high;
+        [nums[i], nums[high]] = [nums[high], nums[i]];
+        const oldHigh = high;
+        high--;
+        frames.push(snap({ moved: same ? [] : [i, oldHigh], title: same ? "The 2 stays where it is" : `Swapped positions ${i} and ${oldHigh}`, lines: [
+          `Position ${N(oldHigh)} now holds ${N(2)} and is finished, so ${P("high")} moves from ${N(oldHigh)} to ${N(high)}.`,
+          same ? `${P("i")} stays at ${N(i)}, which is now past ${P("high")}. No cells are left to look at.`
+               : `Position ${N(i)} now holds ${N(came)}, which came from the part you have not looked at. ${P("i")} stays at ${N(i)} and looks at it next.`,
+        ] }));
+      }
+    }
+    frames.push(snap({ done: true, title: "Done", lines: [
+      `${P("i")} is at ${N(i)}, past ${P("high")} at ${N(high)}. The unseen part is empty.`,
+      `Result: ${nums.map(N).join(", ")}. Each position was looked at most once, so this is one pass.`,
+    ] }));
+    return frames;
+  }
+
+  let frames = [], at = 0;
+
+  function bands(f) {
+    const n = f.nums.length, out = [];
+    const part = k => k < f.low ? "zeros" : k < f.i ? "ones" : k <= f.high ? "unseen" : "twos";
+    const label = { zeros: "0s", ones: "1s", unseen: "not looked at", twos: "2s" };
+    let k = 0;
+    while (k < n) {
+      const p = part(k);
+      let e = k;
+      while (e + 1 < n && part(e + 1) === p) e++;
+      out.push(`<div class="band ${p}" style="grid-column:${k + 2} / ${e + 3}">${label[p]}</div>`);
+      k = e + 1;
+    }
+    return out.join("");
+  }
+
+  function arc(f) {
+    if (!f.swap) return `<div class="arc"></div>`;
+    const [a, b] = f.swap, step = 66, x = c => (c + 1) * step + 29;
+    const x1 = x(a), x2 = x(b), mid = (x1 + x2) / 2;
+    return `<div class="arc"><svg width="${(f.nums.length + 2) * step}" height="30" aria-hidden="true">
+      <path d="M${x1},28 Q${mid},-6 ${x2},28" fill="none" style="stroke: var(--focus)" stroke-width="2.5"/>
+      <path d="M${x1 - 5},21 L${x1},29 L${x1 + 5},21" fill="none" style="stroke: var(--focus)" stroke-width="2.5"/>
+      <path d="M${x2 - 5},21 L${x2},29 L${x2 + 5},21" fill="none" style="stroke: var(--focus)" stroke-width="2.5"/>
+      <text x="${mid}" y="9" text-anchor="middle" font-size="11" font-family="JetBrains Mono, monospace" style="fill: var(--focus)">swap</text>
+    </svg></div>`;
+  }
+
+  function render() {
+    const f = frames[at], n = f.nums.length;
+    const strip = $("strip");
+    strip.style.setProperty("--cols", n + 2);
+    let h = arc(f);
+    h += bands(f);
+    for (let c = -1; c <= n; c++) h += `<div class="idx">${c >= 0 && c < n ? c : ""}</div>`;
+    for (let c = -1; c <= n; c++) {
+      if (c < 0 || c >= n) { h += `<div class="slot"></div>`; continue; }
+      const cls = [`v${f.nums[c]}`];
+      if (f.look === c) cls.push("look");
+      if (f.swap && f.swap.includes(c)) cls.push("swap");
+      if (f.moved && f.moved.includes(c)) cls.push("moved");
+      h += `<div class="cell ${cls.join(" ")}">${f.nums[c]}</div>`;
+    }
+    for (let c = -1; c <= n; c++) {
+      const tags = [];
+      if (f.low === c) tags.push(`<span class="ptr low">low</span>`);
+      if (f.i === c) tags.push(`<span class="ptr i">i</span>`);
+      if (f.high === c) tags.push(`<span class="ptr high">high</span>`);
+      h += `<div class="ptrs">${tags.join("")}</div>`;
+    }
+    strip.innerHTML = h;
+    $("title").textContent = f.title;
+    $("lines").innerHTML = f.lines.map(l => `<li>${l}</li>`).join("");
+    $("count").textContent = `Step ${at} of ${frames.length - 1}`;
+    $("back").disabled = at === 0;
+    $("reset").disabled = at === 0;
+    $("next").disabled = at === frames.length - 1;
+  }
+
+  function load() { frames = trace(ARRAYS[$("pick").value]); at = 0; render(); }
+  const go = to => { at = Math.max(0, Math.min(frames.length - 1, to)); render(); };
+  $("next").addEventListener("click", () => go(at + 1));
+  $("back").addEventListener("click", () => go(at - 1));
+  $("reset").addEventListener("click", () => go(0));
+  $("pick").addEventListener("change", load);
+  document.addEventListener("keydown", e => {
+    if (e.target.closest("input, select, textarea, summary")) return;
+    if (e.key === "ArrowRight") go(at + 1);
+    if (e.key === "ArrowLeft") go(at - 1);
+  });
+  load();
+})();
+</script>
