@@ -110,7 +110,8 @@ The correct solution never goes into the user's folder.
 
 ## 4. Report
 
-Tell the user the folder path, how to run (Run `solution.py` in PyCharm, or `python solution.py`
+Run `.venv/bin/python progress.py` from the project root so the new problem appears in the root
+README's index (with no ✓ yet). Then tell the user the folder path, how to run (Run `solution.py` in PyCharm, or `python solution.py`
 / `python tests.py`; add `3` for one case, `-x` to stop at the first failure), and a one-line list
 of what the edge cases cover.
 Don't hint at the approach.
